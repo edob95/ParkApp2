@@ -227,5 +227,5 @@ public class MainActivity extends AppCompatActivity
         */
         Toast.makeText(this, location.getLatitude() + " " + location.getLongitude() + " :)", Toast.LENGTH_SHORT).show();
     }
-    /*CAZZOOOOO*/
+    /*gradasso*/
 }
