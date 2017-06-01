@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -190,13 +193,15 @@ public class FragmentButtons extends Fragment {
         }
 
     };
+    public interface OnNewsfromFragment{
 
+    }
     private View.OnClickListener buttonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.button_save:
-                    Toast.makeText(getActivity(), "Hai premuto SAVE", Toast.LENGTH_SHORT).show();
+
                     break;
                 case R.id.button_find:
                     Toast.makeText(getActivity(), "Hai premuto FIND", Toast.LENGTH_SHORT).show();
@@ -210,4 +215,5 @@ public class FragmentButtons extends Fragment {
             }
         }
     };
+
 }
