@@ -42,7 +42,7 @@ public class FragmentButtons extends Fragment {
 
 
     private SharedPreferences savedValues;
-    SharedPreferences.Editor editor;
+    private SharedPreferences.Editor editor;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -201,6 +201,14 @@ public class FragmentButtons extends Fragment {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.button_save:
+                    ((MainActivity)getActivity()).saveLocation();
+
+                    //.savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+
+                    double latitude = Double.parseDouble(savedValues.getString("latitude","0"));
+                    double longitude = Double.parseDouble(savedValues.getString("longitude","0"));
+
+                    Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
 
                     break;
                 case R.id.button_find:
@@ -215,5 +223,6 @@ public class FragmentButtons extends Fragment {
             }
         }
     };
+
 
 }

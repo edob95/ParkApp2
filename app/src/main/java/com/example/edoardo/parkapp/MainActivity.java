@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
 
     private Location mLocation;
+    private SharedPreferences sharedPreferences;
 
 
     @Override
@@ -84,20 +85,23 @@ public class MainActivity extends AppCompatActivity
 
         locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(UPDATE_INTERVAL)
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL);
+
+        currentPositionMarker = null;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences sharedPref = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-        int time_hour = sharedPref.getInt("begin_hour", 0);
-        int time_minute = sharedPref.getInt("begin_minute", 0);
-        String date = sharedPref.getString("begin_date", " ");
-        int parkType = sharedPref.getInt("park_type", 0);
-        int end_time_hour = sharedPref.getInt("end_hour", 0);
-        int end_time_minute = sharedPref.getInt("end_minute", 0);
+        sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+        int time_hour = sharedPreferences.getInt("begin_hour", 0);
+        int time_minute = sharedPreferences.getInt("begin_minute", 0);
+        String date = sharedPreferences.getString("begin_date", " ");
+        int parkType = sharedPreferences.getInt("park_type", 0);
+        int end_time_hour = sharedPreferences.getInt("end_hour", 0);
+        int end_time_minute = sharedPreferences.getInt("end_minute", 0);
         Toast.makeText(this, time_hour + ":" + time_minute + " " + date + " " + parkType + " " +
                 end_time_hour + " " + end_time_minute, Toast.LENGTH_SHORT).show();
+
 
     }
 
@@ -153,6 +157,46 @@ public class MainActivity extends AppCompatActivity
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        String stringLatitude = sharedPreferences.getString("latitude", null);
+        String stringLongitude = sharedPreferences.getString("longitude", null);
+
+        if(stringLatitude != null && stringLongitude != null) {
+            if(currentPositionMarker != null) {
+                currentPositionMarker.remove();
+            }
+
+            double latitude = Double.parseDouble(stringLatitude);
+            double longitude = Double.parseDouble(stringLongitude);
+
+            LatLng currentPosition = new LatLng(latitude, longitude);
+            currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Dio, sei tu?"));
+        }
+    }
+
+    public void saveLocation() {
+        //Toast.makeText(this, "triggereato", Toast.LENGTH_SHORT).show();
+        sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //Toast.makeText(this, (float)mLocation.getLatitude()+" "+(float)mLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+        String lat = Double.toString(mLocation.getLatitude());
+        String lon = Double.toString(mLocation.getLongitude());
+        editor.putString("latitude", lat);
+        editor.putString("longitude", lon);
+        editor.commit();
+
+        //Toast.makeText(this, mLocation.getLongitude()+" "+ mLocation.getLatitude(), Toast.LENGTH_SHORT).show();
+
+
+
+
+        //remove previous and add the one
+        if(currentPositionMarker != null){
+            currentPositionMarker.remove();
+        }
+        LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+        currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Dio, sei tu?"));
+
 
 
 
@@ -180,6 +224,9 @@ public class MainActivity extends AppCompatActivity
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
         mMap.setMyLocationEnabled(true);
+
+
+
     }
 
     @Override
@@ -225,6 +272,8 @@ public class MainActivity extends AppCompatActivity
         LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
         currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("enac oiD"));
         */
-        Toast.makeText(this, location.getLatitude() + " " + location.getLongitude() + " :)", Toast.LENGTH_SHORT).show();
+
+        mLocation=location;
+        //Toast.makeText(this, mLocation.getLatitude() + " " + mLocation.getLongitude() + " :)", Toast.LENGTH_LONG).show();
     }
 }
