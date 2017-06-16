@@ -28,19 +28,19 @@ import static android.content.Context.MODE_PRIVATE;
 public class FragmentButtons extends Fragment {
 
     private int parkType;
-    private static final int GRATUITO = 0;
-    private static final int DISCO_ORARIO = 1;
-    private static final int PARCHIMETRO = 2;
+    public static final int GRATUITO = 0;
+    public static final int DISCO_ORARIO = 1;
+    public static final int PARCHIMETRO = 2;
 
     private TimePicker timePicker;
     private TextView timePickerLabel;
     private Button button_save;
-    private Button button_config;
+    //private Button button_config;
     private Button button_find;
     private Button button_nearby;
     private Spinner parkTypes;
-
-
+    private View view;
+    private SharedPreferences sharedPreferences;
     private SharedPreferences savedValues;
     private SharedPreferences.Editor editor;
 
@@ -48,17 +48,17 @@ public class FragmentButtons extends Fragment {
                              Bundle savedInstanceState) {
 
         // inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_buttons_layout,
+        view = inflater.inflate(R.layout.fragment_buttons_layout,
                 container, false);
 
         button_save = (Button) view.findViewById(R.id.button_save);
         button_find = (Button) view.findViewById(R.id.button_find);
-        button_config = (Button) view.findViewById(R.id.button_config);
+        //button_config = (Button) view.findViewById(R.id.button_config);
         button_nearby = (Button) view.findViewById(R.id.button_nearby_parks);
 
 
         button_save.setOnClickListener(buttonListener);
-        button_config.setOnClickListener(buttonListener);
+        //button_config.setOnClickListener(buttonListener);
         button_find.setOnClickListener(buttonListener);
         button_nearby.setOnClickListener(buttonListener);
 
@@ -110,6 +110,7 @@ public class FragmentButtons extends Fragment {
 
 
         dialogBuilder.setTitle(R.string.dialog_title);
+        //////////////////////Bottoni salva o annulla/////////////////////////////////////////////////
         dialogBuilder.setPositiveButton("SALVA", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int id){
 
@@ -151,8 +152,21 @@ public class FragmentButtons extends Fragment {
 
                 editor.commit();
 
+                ((MainActivity)getActivity()).saveLocation();
+
+                displayInfoPark();
+                //.savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+
+                double latitude = Double.parseDouble(savedValues.getString("latitude","0"));
+                double longitude = Double.parseDouble(savedValues.getString("longitude","0"));
+
+                Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
+
+
+
             }
         });
+        ////////////////////////////////////////////////////////////////////////////////////////
         dialogBuilder.setNegativeButton("ANNULLA", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int id){
                 //User canceleed thekfjasuifh
@@ -201,22 +215,24 @@ public class FragmentButtons extends Fragment {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.button_save:
-                    ((MainActivity)getActivity()).saveLocation();
+                    displayOptionsDialog();
+                   /* ((MainActivity)getActivity()).saveLocation();
 
+                    displayInfoPark();
                     //.savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
 
                     double latitude = Double.parseDouble(savedValues.getString("latitude","0"));
                     double longitude = Double.parseDouble(savedValues.getString("longitude","0"));
 
                     Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
-
+                    */
                     break;
                 case R.id.button_find:
                     Toast.makeText(getActivity(), "Hai premuto FIND", Toast.LENGTH_SHORT).show();
                     break;
-                case R.id.button_config:
+               /* case R.id.button_config:
                     displayOptionsDialog();
-                    break;
+                    break;*/
                 case R.id.button_nearby_parks:
                     Toast.makeText(getActivity(), "Hai premuto NEARBY", Toast.LENGTH_SHORT).show();
                     break;
@@ -224,5 +240,51 @@ public class FragmentButtons extends Fragment {
         }
     };
 
+    public String intToParkType(int parkType){
+        switch (parkType){
+            case GRATUITO: {
+                return "Gratuito";
+            }
+            case DISCO_ORARIO:{
+                return "Disco Orario";
+            }
+            case PARCHIMETRO: {
+                return "Parchimetro";
+            }
+            default:return "Gratuito";
+        }
+    }
 
+    public void displayInfoPark(){
+        TextView park_id;
+        TextView park_description;
+
+        sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+        int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);
+        int begin_time_minute = sharedPreferences.getInt("begin_minute", 0);
+        String begin_date = sharedPreferences.getString("begin_date", " ");
+        int parkType = sharedPreferences.getInt("park_type", 0);
+        int end_time_hour = sharedPreferences.getInt("end_hour", 0);
+        int end_time_minute = sharedPreferences.getInt("end_minute", 0);
+
+
+        park_id = (TextView) getActivity().findViewById(R.id.park_id_textview);
+        park_id.setText("Il tuo parcheggio");
+        park_description = (TextView) getActivity().findViewById(R.id.park_description_textview);
+        String parkDescriptionText = intToParkType(parkType) + "\n";
+        Toast.makeText(getActivity(), Integer.toString(R.id.park_description_textview), Toast.LENGTH_SHORT).show();
+
+            parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour
+                    + ":" + begin_time_minute + "\n";
+        if(parkType != GRATUITO) {
+            parkDescriptionText +=  "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
+        }
+        park_description.setText(parkDescriptionText);
+
+
+    }
+    @Override
+   public void onResume() {
+       super.onResume();
+    }
 }

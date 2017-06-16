@@ -93,16 +93,16 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-        int time_hour = sharedPreferences.getInt("begin_hour", 0);
-        int time_minute = sharedPreferences.getInt("begin_minute", 0);
-        String date = sharedPreferences.getString("begin_date", " ");
+        int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);
+        int begin_time_minute = sharedPreferences.getInt("begin_minute", 0);
+        String begin_date = sharedPreferences.getString("begin_date", " ");
         int parkType = sharedPreferences.getInt("park_type", 0);
         int end_time_hour = sharedPreferences.getInt("end_hour", 0);
         int end_time_minute = sharedPreferences.getInt("end_minute", 0);
-        Toast.makeText(this, time_hour + ":" + time_minute + " " + date + " " + parkType + " " +
-                end_time_hour + " " + end_time_minute, Toast.LENGTH_SHORT).show();
-
-
+        /*Toast.makeText(this, begin_time_hour + ":" + begin_time_minute + " " + begin_date + " " + parkType + " " +
+                end_time_hour + " " + end_time_minute, Toast.LENGTH_SHORT).show();*/
+       /* FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
+        buttonsFragment.displayInfoPark();*/
     }
 
     @Override

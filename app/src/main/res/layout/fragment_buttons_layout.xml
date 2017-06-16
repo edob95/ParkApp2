@@ -11,16 +11,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
+
         <Button
             android:id="@+id/button_find"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
-        <Button
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        <!--<Button
             android:id="@+id/button_config"
             android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />-->
         <Button
             android:id="@+id/button_nearby_parks"
             android:layout_weight="1"
@@ -38,11 +39,11 @@
             android:layout_weight="1"
             android:id="@+id/textview_button_find"
             android:text="@string/label_button_find"/>
-        <TextView
+        <!--<TextView
             android:gravity="center"
             android:layout_weight="1"
             android:id="@+id/textview_button_config"
-            android:text="@string/label_button_config"/>
+            android:text="@string/label_button_config"/>-->
         <TextView
             android:gravity="center"
             android:layout_weight="1"

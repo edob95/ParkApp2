@@ -14,7 +14,7 @@
     <string name="time_picker_textview">Scadenza</string>
     <string name="label_button_nearby_parks">Nearby</string>
     <string name="dialog_title">Configura Parcheggio</string>
-    <string name="android_studio">Android Studio</string>
+    <string name="android_studio">Il tuo Park</string>
     <string name="android_studio_android_com">android.studio@android.com</string>
     <string-array name="park_types">
         <item>Gratuito</item>
