@@ -1,15 +1,11 @@
 package com.example.edoardo.parkapp;
 
-import android.content.Context;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -102,42 +98,42 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-        int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);
-        int begin_time_minute = sharedPreferences.getInt("begin_minute", 0);
-        String begin_date = sharedPreferences.getString("begin_date", " ");
+        int begin_time_hour = sharedPreferences.getInt("begin_hour", -1);
+        int begin_time_minute = sharedPreferences.getInt("begin_minute", -1);
+        String begin_date = sharedPreferences.getString("begin_date", null);
         int parkType = sharedPreferences.getInt("park_type", 0);
-        int end_time_hour = sharedPreferences.getInt("end_hour", 0);
-        int end_time_minute = sharedPreferences.getInt("end_minute", 0);
-        /*Toast.makeText(this, begin_time_hour + ":" + begin_time_minute + " " + begin_date + " " + parkType + " " +
-                end_time_hour + " " + end_time_minute, Toast.LENGTH_SHORT).show();*/
-       /* FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
-        buttonsFragment.displayInfoPark();*/
+        int end_time_hour = sharedPreferences.getInt("end_hour", -1);
+        int end_time_minute = sharedPreferences.getInt("end_minute", -1);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if( begin_time_hour >= 0 && begin_time_minute >= 0 && begin_date != null)//sicuramente presenti
+        {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
 
-        FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
+            FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
 
-        View header = navigationView.getHeaderView(0);
-        String parkDescriptionText = buttonsFragment.intToParkType(parkType) + "\n";
-        park_id = (TextView) header.findViewById(R.id.park_id_textview);
-        park_description = (TextView) header.findViewById(R.id.park_description_textview);
-        park_id.setText("Il tuo parcheggio");
-        parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour
-                + ":" + begin_time_minute + "\n";
-        if(parkType != buttonsFragment.GRATUITO) {
-            parkDescriptionText +=  "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
+            View header = navigationView.getHeaderView(0);
+            String parkDescriptionText = buttonsFragment.intToParkType(parkType) + "\n";
+            park_id = (TextView) header.findViewById(R.id.park_id_textview);
+            park_description = (TextView) header.findViewById(R.id.park_description_textview);
+            park_id.setText("Il tuo parcheggio");
+            parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour
+                    + ":" + begin_time_minute + "\n";
+            if(parkType != buttonsFragment.GRATUITO) {
+                parkDescriptionText +=  "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
+            }
+            park_description.setText(parkDescriptionText);
         }
-        park_description.setText(parkDescriptionText);
+
     }
 
     @Override
@@ -250,8 +246,8 @@ public class MainActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, FINE_LOCATION_PERMISSION_REQUEST);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_PERMISSION_REQUEST);
-            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.MAPS_RECEIVE}, FINE_LOCATION_PERMISSION_REQUEST);
-            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.INTERNET}, FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.MAPS_RECEIVE}, FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, FINE_LOCATION_PERMISSION_REQUEST);
 
         }
         // ActivityCompat.requestPermissions(this, permissionString);
