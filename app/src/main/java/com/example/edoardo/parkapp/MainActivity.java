@@ -213,11 +213,8 @@ public class MainActivity extends AppCompatActivity
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details
-            String[] permissionString;
-            permissionString = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
-            ActivityCompat.requestPermissions(this, permissionString, FINE_LOCATION_PERMISSION_REQUEST);
-            permissionString = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
-            ActivityCompat.requestPermissions(this, permissionString, FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_PERMISSION_REQUEST);
             ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.MAPS_RECEIVE}, FINE_LOCATION_PERMISSION_REQUEST);
             ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.INTERNET}, FINE_LOCATION_PERMISSION_REQUEST);
 
