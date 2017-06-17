@@ -31,6 +31,8 @@ public class FragmentButtons extends Fragment {
     public static final int GRATUITO = 0;
     public static final int DISCO_ORARIO = 1;
     public static final int PARCHIMETRO = 2;
+    public TextView park_id;
+    public TextView park_description;
 
     private TimePicker timePicker;
     private TextView timePickerLabel;
@@ -46,7 +48,6 @@ public class FragmentButtons extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_buttons_layout,
                 container, false);
@@ -70,7 +71,6 @@ public class FragmentButtons extends Fragment {
         super.onCreate(savedInstanceState);
 
         savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-
 
     }
 
@@ -256,8 +256,6 @@ public class FragmentButtons extends Fragment {
     }
 
     public void displayInfoPark(){
-        TextView park_id;
-        TextView park_description;
 
         sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);

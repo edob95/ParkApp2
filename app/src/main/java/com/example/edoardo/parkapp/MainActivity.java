@@ -37,12 +37,19 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.text.Text;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
         LocationListener{
+
+
+    private TextView park_id;
+    private TextView park_description;
+
+
 
     private static final int FINE_LOCATION_PERMISSION_REQUEST = 1;
     // Parte di update location
@@ -88,6 +95,7 @@ public class MainActivity extends AppCompatActivity
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL);
 
         currentPositionMarker = null;
+
     }
 
     @Override
@@ -104,6 +112,32 @@ public class MainActivity extends AppCompatActivity
                 end_time_hour + " " + end_time_minute, Toast.LENGTH_SHORT).show();*/
        /* FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
         buttonsFragment.displayInfoPark();*/
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View header = navigationView.getHeaderView(0);
+        String parkDescriptionText = buttonsFragment.intToParkType(parkType) + "\n";
+        park_id = (TextView) header.findViewById(R.id.park_id_textview);
+        park_description = (TextView) header.findViewById(R.id.park_description_textview);
+        park_id.setText("Il tuo parcheggio");
+        parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour
+                + ":" + begin_time_minute + "\n";
+        if(parkType != buttonsFragment.GRATUITO) {
+            parkDescriptionText +=  "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
+        }
+        park_description.setText(parkDescriptionText);
     }
 
     @Override
@@ -178,7 +212,8 @@ public class MainActivity extends AppCompatActivity
         //Toast.makeText(this, "triggereato", Toast.LENGTH_SHORT).show();
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
+        TextView park_id = (TextView) findViewById(R.id.park_id_textview);
+        park_id.setText("Il tuo parcheggio");
         //Toast.makeText(this, (float)mLocation.getLatitude()+" "+(float)mLocation.getLongitude(), Toast.LENGTH_SHORT).show();
         String lat = Double.toString(mLocation.getLatitude());
         String lon = Double.toString(mLocation.getLongitude());
