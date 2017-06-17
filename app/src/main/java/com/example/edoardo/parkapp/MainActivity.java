@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
         LocationListener{
 
+    private static final int FINE_LOCATION_PERMISSION_REQUEST = 1;
     // Parte di update location
     public static final int UPDATE_INTERVAL = 1000;
     public static final int FASTEST_UPDATE_INTERVAL = 2000;
@@ -211,9 +212,18 @@ public class MainActivity extends AppCompatActivity
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+            // for ActivityCompat#requestPermissions for more details
+            String[] permissionString;
+            permissionString = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+            ActivityCompat.requestPermissions(this, permissionString, FINE_LOCATION_PERMISSION_REQUEST);
+            permissionString = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
+            ActivityCompat.requestPermissions(this, permissionString, FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.MAPS_RECEIVE}, FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.INTERNET}, FINE_LOCATION_PERMISSION_REQUEST);
+
         }
+        // ActivityCompat.requestPermissions(this, permissionString);
+
        mLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         if (mLocation != null) {
 

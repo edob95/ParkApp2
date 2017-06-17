@@ -285,6 +285,6 @@ public class FragmentButtons extends Fragment {
     }
     @Override
    public void onResume() {
-       super.onResume();
+        super.onResume();
     }
 }

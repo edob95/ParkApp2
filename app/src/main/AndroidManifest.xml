@@ -4,6 +4,14 @@
 
     <permission
         android:name="com.example.edoardo.parkapp.permission.MAPS_RECEIVE" />
+    <permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <permission
+        android:name="android.permission.INTERNET"/>
+    <permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <uses-permission
         android:name="com.example.edoardo.parkapp.permission.MAPS_RECEIVE"/>
