@@ -154,7 +154,6 @@ public class FragmentButtons extends Fragment {
                 }
 
                 editor.commit();
-
                 ((MainActivity)getActivity()).saveLocation();
 
                 displayInfoPark();
