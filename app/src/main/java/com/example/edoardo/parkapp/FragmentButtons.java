@@ -90,13 +90,9 @@ public class FragmentButtons extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.park_types, android.R.layout.simple_spinner_dropdown_item);
 
-
-
         Date date = new Date(System.currentTimeMillis());
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-
-
 
         timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
@@ -232,14 +228,28 @@ public class FragmentButtons extends Fragment {
                     break;
                 case R.id.button_find:
                     // nuova modifica///////////////////////////////////////////////////
-                    double latitude = 45;
-                    double longitude = 9;
-                    Intent navigation = new Intent(Intent.ACTION_VIEW, Uri
-                            .parse("http://maps.google.com/maps?saddr="
-                                    + latitude + ","
-                                    + longitude + "&daddr="
-                                    + latitude + "," + longitude));
-                    startActivity(navigation);
+                    savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+                    String destinationLatitudeString = savedValues.getString("latitude","");
+                    String destinationLongitudeString = savedValues.getString("longitude","");
+
+                    if(destinationLatitudeString != null && destinationLongitudeString != null) {
+                        double destinationLatitude = Double.parseDouble(destinationLatitudeString);
+                        double destinationLongitude = Double.parseDouble(destinationLongitudeString);
+
+                        Location currentLocation = ((MainActivity)getActivity()).getCurrentLocation();
+                        double sourceLatitude = currentLocation.getLatitude();
+                        double sourceLongitude = currentLocation.getLongitude();
+
+
+
+
+                        Intent navigation = new Intent(Intent.ACTION_VIEW, Uri
+                                .parse("http://maps.google.com/maps?saddr="
+                                        + sourceLatitude + ","
+                                        + sourceLongitude + "&daddr="
+                                        + destinationLatitude + "," + destinationLongitude));
+                        startActivity(navigation);
+                    }
                     ////////////////////////////////////////////////////////////////
 
                     Toast.makeText(getActivity(), "Hai premuto FIND", Toast.LENGTH_SHORT).show();

@@ -407,4 +407,9 @@ public class MainActivity extends AppCompatActivity
         mLocation=location;
         //Toast.makeText(this, mLocation.getLatitude() + " " + mLocation.getLongitude() + " :)", Toast.LENGTH_LONG).show();
     }
+
+    public Location getCurrentLocation() {
+        return mLocation;
+    }
+
 }
