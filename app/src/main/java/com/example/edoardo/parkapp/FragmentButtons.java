@@ -215,7 +215,9 @@ public class FragmentButtons extends Fragment {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.button_save:
+                    if(checkExistingParks()){
                     displayOptionsDialog();
+                    }
                    /* ((MainActivity)getActivity()).saveLocation();
 
                     displayInfoPark();
@@ -253,6 +255,37 @@ public class FragmentButtons extends Fragment {
             }
             default:return "Gratuito";
         }
+    }
+
+    public boolean checkExistingParks(){
+        sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+        int parkType = sharedPreferences.getInt("park_type", -1);
+        if(parkType == -1) {
+            return true;
+        }
+        else{
+
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+            alertDialog.setTitle("Attenzione");
+            alertDialog.setMessage("Cliccando su procedi sovrascriverai il parcheggio precedente");
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Procedi",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            displayOptionsDialog();
+                        }
+                    });
+
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Annulla",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
+        }
+        return false;
     }
 
     public void displayInfoPark(){
