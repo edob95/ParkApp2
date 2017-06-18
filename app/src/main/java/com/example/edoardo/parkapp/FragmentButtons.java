@@ -3,9 +3,12 @@ package com.example.edoardo.parkapp;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,6 +233,17 @@ public class FragmentButtons extends Fragment {
                     */
                     break;
                 case R.id.button_find:
+                    // nuova modifica///////////////////////////////////////////////////
+                    double latitude = 45;
+                    double longitude = 9;
+                    Intent navigation = new Intent(Intent.ACTION_VIEW, Uri
+                            .parse("http://maps.google.com/maps?saddr="
+                                    + latitude + ","
+                                    + longitude + "&daddr="
+                                    + latitude + "," + longitude));
+                    startActivity(navigation);
+                    ////////////////////////////////////////////////////////////////
+
                     Toast.makeText(getActivity(), "Hai premuto FIND", Toast.LENGTH_SHORT).show();
                     break;
                /* case R.id.button_config:
