@@ -2,6 +2,7 @@ package com.example.edoardo.parkapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -310,7 +311,18 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case FINE_LOCATION_PERMISSION_REQUEST: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    finish();
+                    android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
+                    alertDialog.setTitle("Attenzione");
+                    alertDialog.setMessage("ParkApp ha bisogno della posizione per funzionare! " +
+                            "Riavviare l'app e concedere i permessi");
+                    alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
                 }
                 return;
             }
