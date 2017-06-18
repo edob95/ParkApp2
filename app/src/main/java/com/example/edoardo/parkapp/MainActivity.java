@@ -292,6 +292,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if (mLocation != null) {
+
+                LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(15).build();
+
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+            mMap.setMyLocationEnabled(true);
+
+        }
+
+    }
+
+    @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -303,24 +322,20 @@ public class MainActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, FINE_LOCATION_PERMISSION_REQUEST);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_PERMISSION_REQUEST);
-            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.MAPS_RECEIVE}, FINE_LOCATION_PERMISSION_REQUEST);
-            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.INTERNET}, FINE_LOCATION_PERMISSION_REQUEST);
+        } else {
+
+            mLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if (mLocation != null) {
+
+                LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(15).build();
+
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+            mMap.setMyLocationEnabled(true);
 
         }
-        // ActivityCompat.requestPermissions(this, permissionString);
-
-       mLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (mLocation != null) {
-
-            LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentPosition).zoom(15).build();
-
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-        mMap.setMyLocationEnabled(true);
-
-
 
     }
 
