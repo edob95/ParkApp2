@@ -46,7 +46,6 @@ public class FragmentButtons extends Fragment {
     private Spinner parkTypes;
     private View view;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences savedValues;
     private SharedPreferences.Editor editor;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +71,7 @@ public class FragmentButtons extends Fragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
 
     }
 
@@ -102,9 +101,9 @@ public class FragmentButtons extends Fragment {
         parkTypes.setAdapter(adapter);
 
         //Restore previous values of the dialog
-        parkTypes.setSelection(savedValues.getInt("park_type", GRATUITO));
-        timePicker.setCurrentHour(savedValues.getInt("end_hour", calendar.get(Calendar.HOUR)));
-        timePicker.setCurrentMinute(savedValues.getInt("end_minute", calendar.get(Calendar.MINUTE)));
+        parkTypes.setSelection(sharedPreferences.getInt("park_type", GRATUITO));
+        timePicker.setCurrentHour(sharedPreferences.getInt("end_hour", calendar.get(Calendar.HOUR)));
+        timePicker.setCurrentMinute(sharedPreferences.getInt("end_minute", calendar.get(Calendar.MINUTE)));
 
 
         dialogBuilder.setTitle(R.string.dialog_title);
@@ -117,7 +116,7 @@ public class FragmentButtons extends Fragment {
                 calendar.setTime(date);
              /*   Toast.makeText(getActivity(),timePicker.getCurrentHour() + ":"
                         + timePicker.getCurrentMinute(), Toast.LENGTH_SHORT).show();*/
-                editor = savedValues.edit();
+                editor = sharedPreferences.edit();
 
                 //SALVATAGGIO ORE E MINUTI
 
@@ -152,10 +151,10 @@ public class FragmentButtons extends Fragment {
                 ((MainActivity)getActivity()).saveLocation();
 
                 displayInfoPark();
-                //.savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+                //.sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
 
-                double latitude = Double.parseDouble(savedValues.getString("latitude","0"));
-                double longitude = Double.parseDouble(savedValues.getString("longitude","0"));
+                double latitude = Double.parseDouble(sharedPreferences.getString("latitude","0"));
+                double longitude = Double.parseDouble(sharedPreferences.getString("longitude","0"));
 
                 Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
 
@@ -218,41 +217,44 @@ public class FragmentButtons extends Fragment {
                    /* ((MainActivity)getActivity()).saveLocation();
 
                     displayInfoPark();
-                    //.savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+                    //.sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
 
-                    double latitude = Double.parseDouble(savedValues.getString("latitude","0"));
-                    double longitude = Double.parseDouble(savedValues.getString("longitude","0"));
+                    double latitude = Double.parseDouble(sharedPreferences.getString("latitude","0"));
+                    double longitude = Double.parseDouble(sharedPreferences.getString("longitude","0"));
 
                     Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
                     */
                     break;
                 case R.id.button_find:
                     // nuova modifica///////////////////////////////////////////////////
-                    savedValues = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-                    String destinationLatitudeString = savedValues.getString("latitude","");
-                    String destinationLongitudeString = savedValues.getString("longitude","");
+                    sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+                    int parkType = sharedPreferences.getInt("park_type", -1);
+                    String destinationLatitudeString = sharedPreferences.getString("latitude","");
+                    String destinationLongitudeString = sharedPreferences.getString("longitude","");
+                    if(parkType != -1) {
+                        if (destinationLatitudeString != null && destinationLongitudeString != null) {
+                            double destinationLatitude = Double.parseDouble(destinationLatitudeString);
+                            double destinationLongitude = Double.parseDouble(destinationLongitudeString);
 
-                    if(destinationLatitudeString != null && destinationLongitudeString != null) {
-                        double destinationLatitude = Double.parseDouble(destinationLatitudeString);
-                        double destinationLongitude = Double.parseDouble(destinationLongitudeString);
-
-                        Location currentLocation = ((MainActivity)getActivity()).getCurrentLocation();
-                        double sourceLatitude = currentLocation.getLatitude();
-                        double sourceLongitude = currentLocation.getLongitude();
+                            Location currentLocation = ((MainActivity) getActivity()).getCurrentLocation();
+                            double sourceLatitude = currentLocation.getLatitude();
+                            double sourceLongitude = currentLocation.getLongitude();
 
 
+                            Intent navigation = new Intent(Intent.ACTION_VIEW, Uri
+                                    .parse("http://maps.google.com/maps?saddr="
+                                            + sourceLatitude + ","
+                                            + sourceLongitude + "&daddr="
+                                            + destinationLatitude + "," + destinationLongitude));
+                            startActivity(navigation);
+                        }
+                        ////////////////////////////////////////////////////////////////
 
-
-                        Intent navigation = new Intent(Intent.ACTION_VIEW, Uri
-                                .parse("http://maps.google.com/maps?saddr="
-                                        + sourceLatitude + ","
-                                        + sourceLongitude + "&daddr="
-                                        + destinationLatitude + "," + destinationLongitude));
-                        startActivity(navigation);
+                        Toast.makeText(getActivity(), "Hai premuto FIND", Toast.LENGTH_SHORT).show();
                     }
-                    ////////////////////////////////////////////////////////////////
-
-                    Toast.makeText(getActivity(), "Hai premuto FIND", Toast.LENGTH_SHORT).show();
+                    else{
+                        Toast.makeText(getActivity(), "Devi prima salvare il parcheggio", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                /* case R.id.button_config:
                     displayOptionsDialog();
