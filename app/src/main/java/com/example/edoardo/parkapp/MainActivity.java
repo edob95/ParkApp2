@@ -119,6 +119,11 @@ public class MainActivity extends AppCompatActivity
                 currentPositionMarker.remove();
                 hideButtons();
                 //cancella la sharedPreferences alla pressione del bottone
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
             }
         });
         //Recuperta il parktype che se è a meno uno significa che è stato cancellato dal bottone
@@ -128,6 +133,7 @@ public class MainActivity extends AppCompatActivity
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         int parkType = sharedPreferences.getInt("park_type", -1);
         if(parkType == -1){
+
             park_delete_button.setVisibility(View.GONE);
             park_id.setVisibility(View.GONE);
             park_description.setVisibility(View.GONE);
@@ -183,13 +189,6 @@ public class MainActivity extends AppCompatActivity
             parkDescriptionText +=  "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
         }
         park_description.setText(parkDescriptionText);
-
-
-
-
-
-
-
 
     }
 
