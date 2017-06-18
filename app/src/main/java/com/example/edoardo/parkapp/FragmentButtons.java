@@ -37,7 +37,7 @@ public class FragmentButtons extends Fragment {
     private TimePicker timePicker;
     private TextView timePickerLabel;
     private Button button_save;
-    //private Button button_config;
+
     private Button button_find;
     private Button button_nearby;
     private Spinner parkTypes;
