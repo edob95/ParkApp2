@@ -65,7 +65,6 @@ public class FragmentButtons extends Fragment {
         //button_config.setOnClickListener(buttonListener);
         button_find.setOnClickListener(buttonListener);
         button_nearby.setOnClickListener(buttonListener);
-
         return view;
     }
 
