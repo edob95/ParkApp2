@@ -10,10 +10,6 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        //getActivity().setContentView(R.layout.settings_activity);
-
-        // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
     }
