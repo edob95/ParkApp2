@@ -1,18 +1,28 @@
 package com.example.edoardo.parkapp;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -71,10 +81,45 @@ public class MainActivity extends AppCompatActivity
     private Location mLocation;
     private SharedPreferences sharedPreferences;
 
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        new notificationThread().execute();
+
+        if (!isOnline()){
+            android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.setTitle("Attenzione");
+            alertDialog.setMessage("ParkApp ha bisogno della connessione internet per funzionare!");
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Connetti",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            recreate();
+
+                        }
+                    });
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Esci",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+
+                        }
+                    });
+            alertDialog.show();
+        }
+
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -103,7 +148,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
         //Provvisorio
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         final View header = navigationView.getHeaderView(0);
@@ -128,6 +172,30 @@ public class MainActivity extends AppCompatActivity
         });
         //Recuperta il parktype che se è a meno uno significa che è stato cancellato dal bottone
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Intent intent = new Intent(this, MainActivity.class);
+// use System.currentTimeMillis() to have a unique ID for the pending intent
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+// build notification
+// the addAction re-use the same intent to keep the example short
+        Notification n  = new Notification.Builder(this)
+                .setContentTitle("New mail from " + "test@gmail.com")
+                .setContentText("Subject")
+                .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .addAction(R.drawable.common_google_signin_btn_icon_dark, "Call", pIntent)
+                .addAction(R.drawable.common_google_signin_btn_icon_dark_focused, "More", pIntent)
+                .addAction(R.drawable.common_google_signin_btn_icon_disabled, "And more", pIntent).build();
+
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, n);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
     public void hideButtons(){
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
@@ -411,4 +479,27 @@ public class MainActivity extends AppCompatActivity
         return mLocation;
     }
 
+    class notificationThread extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            SharedPreferences sharedPreferences;
+            sharedPreferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+
+            int begin_time_hour = sharedPreferences.getInt("begin_hour", -1);
+            int begin_time_minute = sharedPreferences.getInt("begin_minute", -1);
+
+            int end_time_hour = sharedPreferences.getInt("end_hour", -1);
+            int end_time_minute = sharedPreferences.getInt("end_minute", -1);
+
+            int end_time = end_time_hour*60 + end_time_minute;
+            int begin_time = begin_time_hour*60 + begin_time_minute;
+            int durata = end_time-begin_time;
+
+            return null;
+        }
+        protected void onPostExecute(String result){
+
+        }
+    }
 }
