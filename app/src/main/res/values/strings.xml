@@ -22,4 +22,45 @@
         <item>Disco Orario</item>
         <item>Parchimetro</item>
     </string-array>
+
+    <string name="pref_notification_title">Notifiche</string>
+    <string name="pref_notification_summary">Tipologia di notifiche desiderata</string>
+    <string name="pref_notification_dialog_title">Tipologia</string>
+
+    <string-array name="pref_notification_keys">
+        <item>Nessuna</item>
+        <item>Temporizzata</item>
+    </string-array>
+
+    <string-array name="pref_notification_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string name="pref_notification_default">0</string>
+
+
+
+
+    <string name="pref_period_notification_title">Temporizzazione Notifiche</string>
+    <string name="pref_period_notification_summary">Temporizzazione di notifiche desiderata prima della scadenza</string>
+    <string name="pref_period_notification_dialog_title">Temporizzazione</string>
+
+    <string-array name="pref_period_notification_keys">
+        <item>30</item>
+        <item>15</item>
+        <item>10</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="pref_period_notification_values">
+        <item>30</item>
+        <item>15</item>
+        <item>10</item>
+        <item>5</item>
+    </string-array>
+
+    <string name="pref_period_notification_default">0</string>
+
+
 </resources>
