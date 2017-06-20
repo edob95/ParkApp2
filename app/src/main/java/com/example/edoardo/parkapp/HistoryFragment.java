@@ -33,7 +33,7 @@ public class HistoryFragment extends PreferenceFragment {
     public String begins;
     public String ends;
 
-    public TextView firstColoumn;
+    //public TextView firstColoumn;
     public TextView secondColoumn;
     public TextView thirdColoumn;
     public TextView fourthColoumn;
@@ -44,13 +44,13 @@ public class HistoryFragment extends PreferenceFragment {
         // inflate the layout for this fragment
         view = inflater.inflate(R.layout.history_fragment_layout,
                 container, false);
-        firstColoumn = (TextView) view.findViewById(R.id.textview_db_id);
+        //firstColoumn = (TextView) view.findViewById(R.id.textview_db_id);
         secondColoumn = (TextView) view.findViewById(R.id.textview_db_parktype);
         thirdColoumn = (TextView) view.findViewById(R.id.textview_db_date);
         fourthColoumn =(TextView) view.findViewById(R.id.textview_db_orainizio);
         fifthColoumn =(TextView) view.findViewById(R.id.textview_db_orafine);
 
-        firstColoumn.setText(ids);
+        //firstColoumn.setText(ids);
         secondColoumn.setText(types);
         thirdColoumn.setText(dates);
         fourthColoumn.setText(begins);
@@ -66,25 +66,22 @@ public class HistoryFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ParkDB db = new ParkDB(getActivity());
-        StringBuilder sbid = new StringBuilder();
+        //StringBuilder sbid = new StringBuilder();
         StringBuilder sbtype = new StringBuilder();
         StringBuilder sbdate = new StringBuilder();
         StringBuilder sbbegin = new StringBuilder();
         StringBuilder sbend = new StringBuilder();
-        Park park = new Park(1, "null","null","null","null");
-        long insertId = db.insertPark(park);
-        if(insertId > 0) {
-            sbid.append("Row inserted! Insert Id: " + insertId + "\n");
-        }
+
+
         ArrayList<Park> parks = db.getParks();
         for (Park p : parks){
-            sbid.append(p.getPark_id() + "\n");
+            //sbid.append(p.getPark_id() + "\n");
             sbtype.append(p.getPark_type() + "\n");
             sbdate.append(p.getDate() + "\n");
             sbbegin.append(p.getOra_inizio() + "\n");
             sbend.append(p.getOra_fine() + "\n");
         }
-        ids=sbid.toString();
+        //ids=sbid.toString();
         types=sbtype.toString();
         dates=sbdate.toString();
         begins=sbbegin.toString();

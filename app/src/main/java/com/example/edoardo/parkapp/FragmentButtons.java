@@ -120,8 +120,8 @@ public class FragmentButtons extends Fragment {
 
                 //SALVATAGGIO ORE E MINUTI
 
-                editor.putString("begin_date", Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)) + " "
-                        + Integer.toString(calendar.get(Calendar.MONTH)+1) + " " +
+                editor.putString("begin_date", Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)) + "/"
+                        + Integer.toString(calendar.get(Calendar.MONTH)+1) + "/" +
                         Integer.toString(calendar.get(Calendar.YEAR)));
                 editor.putInt("begin_hour", calendar.get(Calendar.HOUR_OF_DAY));
                 editor.putInt("begin_minute", calendar.get(Calendar.MINUTE));
@@ -250,7 +250,52 @@ public class FragmentButtons extends Fragment {
                         }
                         ////////////////////////////////////////////////////////////////
 
-                        Toast.makeText(getActivity(), "Hai premuto FIND", Toast.LENGTH_SHORT).show();
+
+                        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Attenzione");
+                        alertDialog.setMessage("Hai raggiunto il parcheggio?");
+                        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "SI",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ParkDB db = new ParkDB(getActivity());
+
+                                        sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+                                        int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);
+                                        int begin_time_minute = sharedPreferences.getInt("begin_minute", 0);
+                                        String begin_date = sharedPreferences.getString("begin_date", " ");
+                                        int parkType = sharedPreferences.getInt("park_type", 0);
+                                        int end_time_hour = sharedPreferences.getInt("end_hour", 0);
+                                        int end_time_minute = sharedPreferences.getInt("end_minute", 0);
+
+                                        String parktype_db = intToParkType(parkType);
+                                        String date_db = begin_date;
+                                        String orainizio_db = Integer.toString(begin_time_hour) + ":" + Integer.toString(begin_time_minute);
+                                        String orafine_db;
+                                        if(parkType!=0)
+                                            orafine_db = Integer.toString(end_time_hour) + ":" + Integer.toString(end_time_minute);
+                                        else
+                                            orafine_db="/";
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        Park park = new Park(parktype_db,date_db,orainizio_db,orafine_db);
+                                        long insertId = db.insertPark(park);
+
+                                        editor.clear().commit();
+                                        getActivity().recreate();
+                                        dialog.dismiss();
+
+
+
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+
+                                    }
+                                });
+                        alertDialog.show();
+
                     }
                     else{
                         Toast.makeText(getActivity(), "Devi prima salvare il parcheggio", Toast.LENGTH_SHORT).show();

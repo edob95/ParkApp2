@@ -58,8 +58,8 @@ public class ParkDB {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_HISTORY_TABLE);
 
-            db.execSQL("INSERT INTO history VALUES (1,'Pagamento', '27/06/2017', '14:35', '15:35')");
-            db.execSQL("INSERT INTO history VALUES (2,'Gratis', '15/05/2017', '15:35', '/')");
+            db.execSQL("INSERT INTO history VALUES (0, 'Pagamento', '27/06/2017', '14:35', '15:35')");
+            db.execSQL("INSERT INTO history VALUES (1, 'Gratis', '15/05/2017', '15:35', '/')");
 
         }
 
@@ -121,7 +121,6 @@ public class ParkDB {
     }
     public long insertPark(Park park){
         ContentValues cv = new ContentValues();
-        cv.put(HISTORY_ID, park.getPark_id());
         cv.put(HISTORY_PARKTYPE, park.getPark_type());
         cv.put(HISTORY_DATE, park.getDate());
         cv.put(HISTORY_ORAINIZIO, park.getOra_inizio());
@@ -154,6 +153,14 @@ public class ParkDB {
 
         this.openWriteable();
         int rowCount= db.delete(HISTORY_TABLE, where,whereArgs);
+        this.closeDB();
+
+        return rowCount;
+    }
+    public int deleteAll(){
+
+        this.openWriteable();
+        int rowCount= db.delete(HISTORY_TABLE, null,null);
         this.closeDB();
 
         return rowCount;

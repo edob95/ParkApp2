@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     >
     <TableRow>
-
+        <!--
         <TextView
             android:id="@+id/textview_db_id"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="?attr/colorPrimary" />
-
+        -->
         <TextView
             android:id="@+id/textview_db_parktype"
             android:layout_weight="1"
