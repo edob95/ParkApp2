@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <TableRow>
+
+        <TextView
+            android:id="@+id/textview_db_id"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textview_db_parktype"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textview_db_date"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textview_db_orainizio"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textview_db_orafine"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/colorPrimary" />
+
+    </TableRow>
+</TableLayout>
