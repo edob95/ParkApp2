@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_history) {
             // Handle the camera action
-
+            startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
 
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
