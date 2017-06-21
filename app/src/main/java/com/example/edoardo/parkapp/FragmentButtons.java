@@ -48,6 +48,11 @@ public class FragmentButtons extends Fragment {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
+    private ParkAppApplicationObject app;
+
+    private final static long MINUTE_PER_DAY = 1440;
+    private final static long MILLISECOND_PER_MINUTE = 60000;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // inflate the layout for this fragment
@@ -111,12 +116,19 @@ public class FragmentButtons extends Fragment {
         dialogBuilder.setPositiveButton("SALVA", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int id){
 
-                Date date = new Date(System.currentTimeMillis());
-                GregorianCalendar calendar = new GregorianCalendar();
+                long currentTimeMillis = System.currentTimeMillis();
+                Date date = new Date(currentTimeMillis);                GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(date);
              /*   Toast.makeText(getActivity(),timePicker.getCurrentHour() + ":"
                         + timePicker.getCurrentMinute(), Toast.LENGTH_SHORT).show();*/
+
+
+
+
+                int beginPickerHour = calendar.get(Calendar.HOUR_OF_DAY);
+                int beginPickerMinute = calendar.get(Calendar.MINUTE);
                 editor = sharedPreferences.edit();
+
 
                 //SALVATAGGIO ORE E MINUTI
 
@@ -125,39 +137,39 @@ public class FragmentButtons extends Fragment {
                         Integer.toString(calendar.get(Calendar.YEAR)));
                 editor.putInt("begin_hour", calendar.get(Calendar.HOUR_OF_DAY));
                 editor.putInt("begin_minute", calendar.get(Calendar.MINUTE));
+                int timePickerHour = -1;
+                int timePickerMinute = -1;
+                long duration = -1;
 
-                switch (parkType){
-                    case DISCO_ORARIO:
-                        editor.putInt("end_hour", timePicker.getCurrentHour());
-                        editor.putInt("end_minute", timePicker.getCurrentMinute());
-                        editor.putInt("park_type", DISCO_ORARIO);
-                        break;
+                editor.putInt("park_type", parkType);
 
-                    case PARCHIMETRO:
-                        editor.putInt("end_hour", timePicker.getCurrentHour());
-                        editor.putInt("end_minute", timePicker.getCurrentMinute());
-                        editor.putInt("park_type", PARCHIMETRO);
-                        break;
+                if( parkType == DISCO_ORARIO || parkType == PARCHIMETRO) {
 
-                    case GRATUITO:
-                        editor.putInt("park_type", GRATUITO);
-                        break;
+                    timePickerHour = timePicker.getCurrentHour();
+                    timePickerMinute = timePicker.getCurrentMinute();
+                    editor.putInt("end_hour", timePickerHour);
+                    editor.putInt("end_minute", timePickerMinute);
+                    duration = calculateDuration(timePickerHour, timePickerMinute, beginPickerHour, beginPickerMinute);
+                    editor.putLong("park_duration", duration);
+                    editor.putLong("begin_time_millis", currentTimeMillis);
 
-                    default:
-                        editor.putInt("park_type", GRATUITO);
+                    app = (ParkAppApplicationObject) (getActivity()).getApplication();
+
+                    Intent service = new Intent(app, ParkAppService.class);
+                    app.stopService(service);
+                    app.startService(service);
+
+                    //.sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+
+                    double latitude = Double.parseDouble(sharedPreferences.getString("latitude","0"));
+                    double longitude = Double.parseDouble(sharedPreferences.getString("longitude","0"));
+
+                    Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
+
                 }
-
                 editor.commit();
                 ((MainActivity)getActivity()).saveLocation();
-
                 displayInfoPark();
-                //.sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-
-                double latitude = Double.parseDouble(sharedPreferences.getString("latitude","0"));
-                double longitude = Double.parseDouble(sharedPreferences.getString("longitude","0"));
-
-                Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
-
 
 
             }
@@ -390,4 +402,21 @@ public class FragmentButtons extends Fragment {
    public void onResume() {
         super.onResume();
     }
+
+    private long calculateDuration(long endHour, long endMinute, long beginHour, long beginMinute) {
+
+        long endMinuteFrom00 = endHour*60 + endMinute;
+        long beginMinuteFrom00 = beginHour*60 + beginMinute;
+
+        long duration = (endMinuteFrom00 - beginMinuteFrom00 + MINUTE_PER_DAY) % MINUTE_PER_DAY;
+
+        if(duration == 0) {
+            duration = MINUTE_PER_DAY;
+        }
+        duration = duration * MILLISECOND_PER_MINUTE;
+        return duration;
+
+    }
+
+
 }

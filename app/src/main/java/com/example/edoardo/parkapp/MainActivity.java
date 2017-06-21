@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private GoogleApiClient googleApiClient;
-    private GoogleMap mMap;
+    public GoogleMap mMap;
 
     private Location mLocation;
     private SharedPreferences sharedPreferences;
@@ -169,10 +169,56 @@ public class MainActivity extends AppCompatActivity
         park_delete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.clear().commit();
-                currentPositionMarker.remove();
-                hideButtons();
+
+                android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setCancelable(false);
+                alertDialog.setTitle("Attenzione");
+                alertDialog.setMessage("Vuoi eliminare il parcheggio?");
+                alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "SI",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                ParkDB db = new ParkDB(MainActivity.this);
+
+                                sharedPreferences = MainActivity.this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+                                int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);
+                                int begin_time_minute = sharedPreferences.getInt("begin_minute", 0);
+                                String begin_date = sharedPreferences.getString("begin_date", " ");
+                                int parkType = sharedPreferences.getInt("park_type", 0);
+                                int end_time_hour = sharedPreferences.getInt("end_hour", 0);
+                                int end_time_minute = sharedPreferences.getInt("end_minute", 0);
+                                FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
+                                String parktype_db = buttonsFragment.intToParkType(parkType);
+                                String date_db = begin_date;
+                                String orainizio_db = Integer.toString(begin_time_hour) + ":" + Integer.toString(begin_time_minute);
+                                String orafine_db;
+                                if(parkType!=0)
+                                    orafine_db = Integer.toString(end_time_hour) + ":" + Integer.toString(end_time_minute);
+                                else
+                                    orafine_db="/";
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                Park park = new Park(parktype_db,date_db,orainizio_db,orafine_db);
+                                long insertId = db.insertPark(park);
+                                dialog.dismiss();
+                                editor.clear().commit();
+                                currentPositionMarker.remove();
+                                hideButtons();
+                            }
+                        });
+                alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "NO",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                            }
+                        });
+                alertDialog.show();
+
+
+
+
+
+
                 //cancella la sharedPreferences alla pressione del bottone
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -183,30 +229,6 @@ public class MainActivity extends AppCompatActivity
         });
         //Recuperta il parktype che se è a meno uno significa che è stato cancellato dal bottone
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Intent intent = new Intent(this, MainActivity.class);
-// use System.currentTimeMillis() to have a unique ID for the pending intent
-        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
-
-// build notification
-// the addAction re-use the same intent to keep the example short
-        Notification n = new Notification.Builder(this)
-                .setContentTitle("New mail from " + "test@gmail.com")
-                .setContentText("Subject")
-                .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
-                .setContentIntent(pIntent)
-                .setAutoCancel(true)
-                .addAction(R.drawable.common_google_signin_btn_icon_dark, "Call", pIntent)
-                .addAction(R.drawable.common_google_signin_btn_icon_dark_focused, "More", pIntent)
-                .addAction(R.drawable.common_google_signin_btn_icon_disabled, "And more", pIntent).build();
-
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0, n);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     public void hideButtons() {
@@ -343,6 +365,7 @@ public class MainActivity extends AppCompatActivity
             currentPositionMarker.remove();
         }
         LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+        mMap.clear();
         currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition)
                 .title("Dio, sei tu?")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
