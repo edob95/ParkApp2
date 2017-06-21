@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity
             double longitude = Double.parseDouble(stringLongitude);
 
             LatLng currentPosition = new LatLng(latitude, longitude);
-            currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Dio, sei tu?"));
+            currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Dio, sei tu?").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         }
     }
 
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity
         LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
         currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition)
                 .title("Dio, sei tu?")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
     }
 
