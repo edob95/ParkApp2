@@ -1,34 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:background="#4334"
-    android:layout_height="match_parent"
-    >
-    <TableRow>
+    android:background="#e3e7ed"
+    android:layout_height="match_parent">
+
         <Button
             android:id="@+id/button_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/rounded_buttons"
+            android:text="SALVA"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="16dp"/>
 
         <Button
             android:id="@+id/button_find"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-        <!--<Button
-            android:id="@+id/button_config"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />-->
+            android:background="@drawable/rounded_buttons"
+            android:text="TROVA"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="16dp"/>
         <Button
             android:id="@+id/button_nearby_parks"
             android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </TableRow>
-    <TableRow>
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_buttons"
+            android:text="NEARBY"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="16dp"
+            />
+
+
+    <!--<TableRow>
         <TextView
             android:gravity="center"
             android:id="@+id/textview_button_save"
@@ -39,16 +54,11 @@
             android:layout_weight="1"
             android:id="@+id/textview_button_find"
             android:text="@string/label_button_find"/>
-        <!--<TextView
-            android:gravity="center"
-            android:layout_weight="1"
-            android:id="@+id/textview_button_config"
-            android:text="@string/label_button_config"/>-->
         <TextView
             android:gravity="center"
             android:layout_weight="1"
             android:id="@+id/textview_button_nearby_parks"
             android:text="@string/label_button_nearby_parks"/>
 
-    </TableRow>
-</TableLayout>
+    </TableRow>-->
+</LinearLayout>

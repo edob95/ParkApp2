@@ -1,6 +1,7 @@
 package com.example.edoardo.parkapp;
 
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 
 public class SettingsFragment extends PreferenceFragment {
@@ -9,7 +10,6 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         addPreferencesFromResource(R.xml.preferences);
 
     }

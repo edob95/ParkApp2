@@ -53,6 +53,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.plus.model.people.Person;
@@ -271,6 +272,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        //getSupportActionBar().setIcon(R.mipmap.ic_launcher_parkapp);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -327,6 +329,8 @@ public class MainActivity extends AppCompatActivity
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+       /* MapStyleOptions map_style = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style);
+        googleMap.setMapStyle(map_style);*/
         String stringLatitude = sharedPreferences.getString("latitude", null);
         String stringLongitude = sharedPreferences.getString("longitude", null);
 

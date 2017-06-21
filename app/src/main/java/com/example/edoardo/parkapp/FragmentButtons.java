@@ -293,6 +293,7 @@ public class FragmentButtons extends Fragment {
 
                                         editor.clear().commit();
                                         ((MainActivity)getActivity()).deleteMarker();
+                                        ((MainActivity)getActivity()).hideButtons();
                                         dialog.dismiss();
 
 

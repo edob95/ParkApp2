@@ -99,7 +99,7 @@ public class ParkAppService extends Service{
                 PendingIntent.getActivity(this, 0, notificationIntent, flags);
 
         // create the variables for the notification
-        int icon = R.drawable.side_nav_bar;
+        int icon = R.drawable.ic_stat_name;
         CharSequence tickerText = "30 minutes to go";
         CharSequence contentTitle = getText(R.string.app_name);
         CharSequence contentText = text;
