@@ -305,6 +305,9 @@ public class FragmentButtons extends Fragment {
                     displayOptionsDialog();
                     break;*/
                 case R.id.button_nearby_parks:
+
+                    ((MainActivity)getActivity()).showNearbParks();
+
                     Toast.makeText(getActivity(), "Hai premuto NEARBY", Toast.LENGTH_SHORT).show();
                     break;
             }

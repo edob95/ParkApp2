@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -24,6 +26,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -33,6 +36,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,26 +50,33 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.text.Text;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Locale;
+
+import static com.example.edoardo.parkapp.R.id.map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
-        LocationListener{
+        LocationListener {
 
-
+    private int PROXIMITY_RADIUS = 5000;
     private TextView park_id;
     private TextView park_description;
 
-
     //provvisorio
     private Button park_delete_button;
-
 
     private static final int FINE_LOCATION_PERMISSION_REQUEST = 1;
     // Parte di update location
@@ -81,6 +92,7 @@ public class MainActivity extends AppCompatActivity
     private Location mLocation;
     private SharedPreferences sharedPreferences;
 
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -92,9 +104,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       // new notificationThread().execute();
+        // new notificationThread().execute();
 
-        if (!isOnline()){
+        if (!isOnline()) {
             android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
@@ -135,7 +147,7 @@ public class MainActivity extends AppCompatActivity
 
         /*---------------------Mappa------------------*/
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(map);
         mapFragment.getMapAsync(this);
 
         googleApiClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API).addConnectionCallbacks(this)
@@ -145,7 +157,6 @@ public class MainActivity extends AppCompatActivity
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL);
 
         currentPositionMarker = null;
-
 
 
         //Provvisorio
@@ -180,7 +191,7 @@ public class MainActivity extends AppCompatActivity
 
 // build notification
 // the addAction re-use the same intent to keep the example short
-        Notification n  = new Notification.Builder(this)
+        Notification n = new Notification.Builder(this)
                 .setContentTitle("New mail from " + "test@gmail.com")
                 .setContentText("Subject")
                 .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
@@ -197,24 +208,24 @@ public class MainActivity extends AppCompatActivity
         notificationManager.notify(0, n);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
-    public void hideButtons(){
+
+    public void hideButtons() {
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         int parkType = sharedPreferences.getInt("park_type", -1);
-        if(parkType == -1){
+        if (parkType == -1) {
 
             park_delete_button.setVisibility(View.GONE);
             park_id.setVisibility(View.GONE);
             park_description.setVisibility(View.GONE);
 
-        }
-
-        else{
+        } else {
             park_delete_button.setVisibility(View.VISIBLE);
             park_id.setVisibility(View.VISIBLE);
             park_description.setVisibility(View.VISIBLE);
         }
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -253,8 +264,8 @@ public class MainActivity extends AppCompatActivity
         park_id.setText("Il tuo parcheggio");
         parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour
                 + ":" + begin_time_minute + "\n";
-        if(parkType != buttonsFragment.GRATUITO) {
-            parkDescriptionText +=  "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
+        if (parkType != buttonsFragment.GRATUITO) {
+            parkDescriptionText += "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
         }
         park_description.setText(parkDescriptionText);
 
@@ -269,6 +280,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -296,8 +308,8 @@ public class MainActivity extends AppCompatActivity
         String stringLatitude = sharedPreferences.getString("latitude", null);
         String stringLongitude = sharedPreferences.getString("longitude", null);
 
-        if(stringLatitude != null && stringLongitude != null) {
-            if(currentPositionMarker != null) {
+        if (stringLatitude != null && stringLongitude != null) {
+            if (currentPositionMarker != null) {
                 currentPositionMarker.remove();
             }
 
@@ -326,17 +338,14 @@ public class MainActivity extends AppCompatActivity
         //Toast.makeText(this, mLocation.getLongitude()+" "+ mLocation.getLatitude(), Toast.LENGTH_SHORT).show();
 
 
-
-
         //remove previous and add the one
-        if(currentPositionMarker != null){
+        if (currentPositionMarker != null) {
             currentPositionMarker.remove();
         }
         LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-        currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Dio, sei tu?"));
-
-
-
+        currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition)
+                .title("Dio, sei tu?")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
 
     }
 
@@ -368,7 +377,7 @@ public class MainActivity extends AppCompatActivity
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                   finish();
+                                    finish();
 
                                 }
                             });
@@ -415,28 +424,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if(connectionResult.hasResolution()){
-            try{
+        if (connectionResult.hasResolution()) {
+            try {
                 connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            }
-            catch(IntentSender.SendIntentException e){
+            } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
             }
-        }
-        else{
+        } else {
             new AlertDialog.Builder(this).setMessage("Connection failed. Error Code: " + connectionResult.getErrorCode()).show();
         }
     }
 
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         googleApiClient.connect();
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         googleApiClient.disconnect();
         super.onStop();
     }
@@ -452,7 +459,7 @@ public class MainActivity extends AppCompatActivity
         currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("enac oiD"));
         */
 
-        mLocation=location;
+        mLocation = location;
         //Toast.makeText(this, mLocation.getLatitude() + " " + mLocation.getLongitude() + " :)", Toast.LENGTH_LONG).show();
     }
 
@@ -473,14 +480,54 @@ public class MainActivity extends AppCompatActivity
             int end_time_hour = sharedPreferences.getInt("end_hour", -1);
             int end_time_minute = sharedPreferences.getInt("end_minute", -1);
 
-            int end_time = end_time_hour*60 + end_time_minute;
-            int begin_time = begin_time_hour*60 + begin_time_minute;
-            int durata = end_time-begin_time;
+            int end_time = end_time_hour * 60 + end_time_minute;
+            int begin_time = begin_time_hour * 60 + begin_time_minute;
+            int durata = end_time - begin_time;
 
             return "OK";
         }
-        protected void onPostExecute(String result){
+
+        protected void onPostExecute(String result) {
 
         }
     }
+
+    public void showNearbParks() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        String url = getUrl(mLocation.getLatitude(), mLocation.getLongitude(), "parking");
+        Object[] DataTransfer = new Object[2];
+        DataTransfer[0] = mMap;
+        DataTransfer[1] = url;
+        Log.d("onClick", url);
+        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+        getNearbyPlacesData.execute(DataTransfer);
+        Toast.makeText(this,"Parcheggi nelle vicinanze", Toast.LENGTH_LONG).show();
+    }
+
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + latitude + "," + longitude);
+        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
+        googlePlacesUrl.append("&types=" + nearbyPlace);
+        googlePlacesUrl.append("&sensor=false");
+        googlePlacesUrl.append("&key=" + "AIzaSyDuPJ1zEsv6exa9fbSq8j1MDss-A9aEG3Q");
+        Log.d("getUrl", googlePlacesUrl.toString());
+        googlePlacesUrl.toString();
+        return (googlePlacesUrl.toString());
+    }
+
+
+
+
 }
