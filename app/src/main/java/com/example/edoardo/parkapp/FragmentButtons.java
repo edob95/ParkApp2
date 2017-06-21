@@ -107,7 +107,7 @@ public class FragmentButtons extends Fragment {
 
         //Restore previous values of the dialog
         parkTypes.setSelection(sharedPreferences.getInt("park_type", GRATUITO));
-        timePicker.setCurrentHour(sharedPreferences.getInt("end_hour", calendar.get(Calendar.HOUR)));
+        timePicker.setCurrentHour(sharedPreferences.getInt("end_hour", calendar.get(Calendar.HOUR_OF_DAY)));
         timePicker.setCurrentMinute(sharedPreferences.getInt("end_minute", calendar.get(Calendar.MINUTE)));
 
 

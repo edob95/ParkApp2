@@ -37,7 +37,7 @@
         <item>1</item>
     </string-array>
 
-    <string name="pref_notification_default">0</string>
+    <string name="pref_notification_default">1</string>
 
 
 
@@ -60,7 +60,9 @@
         <item>5</item>
     </string-array>
 
-    <string name="pref_period_notification_default">0</string>
+    <string name="pref_period_notification_default">30</string>
 
+    <string name="pref_ringing_title">Notifica Sonora?</string>
+    <string name="pref_ringing_summary">Segnalazione sonora a metà intervallo tra notifica e scadenza</string>
 
 </resources>

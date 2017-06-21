@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
     <ListPreference
         android:key="pref_notification"
         android:title="@string/pref_notification_title"
@@ -17,4 +16,10 @@
         android:entries="@array/pref_period_notification_keys"
         android:entryValues="@array/pref_period_notification_values"
         android:defaultValue="@string/pref_period_notification_default" />
+    <CheckBoxPreference
+        android:key="pref_ringing_notification"
+        android:title="@string/pref_ringing_title"
+        android:summary="@string/pref_ringing_summary"
+        android:defaultValue="true"
+        />
 </PreferenceScreen>
