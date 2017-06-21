@@ -292,7 +292,7 @@ public class FragmentButtons extends Fragment {
                                         long insertId = db.insertPark(park);
 
                                         editor.clear().commit();
-                                        getActivity().recreate();
+                                        ((MainActivity)getActivity()).deleteMarker();
                                         dialog.dismiss();
 
 

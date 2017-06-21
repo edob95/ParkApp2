@@ -342,7 +342,9 @@ public class MainActivity extends AppCompatActivity
             currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Dio, sei tu?").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         }
     }
-
+    public void deleteMarker(){
+        currentPositionMarker.remove();
+    }
     public void saveLocation() {
         hideButtons();
         //Toast.makeText(this, "triggereato", Toast.LENGTH_SHORT).show();
