@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
     android:background="#FFFFFF">
 
     <ImageView
-        android:layout_marginTop="120dp"
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
-        android:layout_height="159dp"
-        app:srcCompat="@mipmap/ic_launcher_parkapp"
-        android:layout_weight="0.21" />
-    <TextView
-        android:fontFamily="sans-serif-thin"
-        android:layout_width="match_parent"
-        android:layout_height="143dp"
-        android:text="Welcome to ParkApp"
+        android:layout_height="250dp"
+        android:layout_marginTop="60dp"
         android:gravity="center"
-        android:textSize="25dp"
-        android:textColor="#000000"    />
+        app:srcCompat="@drawable/app_icon" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/splash_welcome"
+        android:textColor="#056ac4"
+        android:textSize="50sp"
+        android:textStyle="bold" />
 </LinearLayout>

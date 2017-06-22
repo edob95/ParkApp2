@@ -329,8 +329,8 @@ public class MainActivity extends AppCompatActivity
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-       /* MapStyleOptions map_style = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style);
-        googleMap.setMapStyle(map_style);*/
+        //MapStyleOptions map_style = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style);
+        //googleMap.setMapStyle(map_style);
         String stringLatitude = sharedPreferences.getString("latitude", null);
         String stringLongitude = sharedPreferences.getString("longitude", null);
 

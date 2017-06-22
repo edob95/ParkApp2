@@ -24,7 +24,7 @@
     <style name="MyTheme" parent="MyTheme.Base">
     </style>
 
-    <style name="MyTheme.Splash" parent ="Theme.AppCompat.Light.NoActionBar">
+    <style name="MyTheme.Splash" parent ="AppTheme.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">false</item>
     </style>

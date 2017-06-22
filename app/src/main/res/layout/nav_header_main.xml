@@ -33,7 +33,7 @@
         android:id="@+id/park_description_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"/>
+        android:textSize="16sp"/>
 
     <Button
         android:id="@+id/park_delete_button"
