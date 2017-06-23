@@ -147,13 +147,23 @@ public class FragmentButtons extends Fragment {
                     long duration = calculateDuration(timePickerHour, timePickerMinute, beginPickerHour, beginPickerMinute);
                     long endTimeMillis = currentTimeMillis + duration;//dato essenziale al servizio
 
+
+                    PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, false);
+                    SharedPreferences settingsPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    int notificationType = Integer.parseInt( settingsPreferences.getString("pref_notification", "2") );
+                    long notificationPeriod =  MILLISECOND_PER_MINUTE*Long.parseLong( settingsPreferences.getString("pref_period_notification", "30") );
+                    boolean isRingingEnabled = settingsPreferences.getBoolean("pref_ringing_notification", true);
+
                     /*in questo caso aggiungo alle shared preferences anche ora fine e durata*/
                     editor = sharedPreferences.edit();
                     editor.putInt("end_hour", timePickerHour);
                     editor.putInt("end_minute", timePickerMinute);
-                    editor.putLong("park_duration", duration);//per sola statistica nello storico
+                    editor.putLong("park_duration", duration);//per sola statistica nello storicoL
                     editor.putLong("endTimeMillis", endTimeMillis);//l'ora di fine è l'unico dato essenziale al servizio
                     editor.putBoolean("hasFirstNotificationHappened", false);
+                    editor.putInt("pref_notification", notificationType);
+                    editor.putLong("pref_period_notification", notificationPeriod);
+                    editor.putBoolean("pref_ringing_notification", isRingingEnabled);
                     editor.commit();
 
                     app.startService(intentService);

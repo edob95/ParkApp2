@@ -30,24 +30,25 @@ public class ParkAppService extends NotificationListenerService{
 
     public final static int INTERVAL = 20000;
     public final static long MILLISECONDS_PER_MINUTE = 60000;
+    public final static int NO_NOTIFICATION = 0;
     public final static int SINGLE_NOTIFICATION = 1;
     public final static int DOUBLE_NOTIFICATION = 2;
 
     private ParkAppApplicationObject app;
     private Timer timer;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences settingsPreferences;
 
     private long endTimeMillis;
     private boolean hasFirstNotificationHappened;
+    private int notificationType;
+    private long notificationTimeMillis;
+    private boolean isRingingEnabled;
 
     @Override
     public void onCreate() {
         Log.d("Park App", "Service created");
         app = (ParkAppApplicationObject) getApplication();
         sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        settingsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -76,37 +77,32 @@ public class ParkAppService extends NotificationListenerService{
     private void startTimer() {
 
         endTimeMillis = sharedPreferences.getLong("endTimeMillis", -1);
+        notificationType = sharedPreferences.getInt("pref_notification", 2);
+        notificationTimeMillis = sharedPreferences.getLong("pref_period_notification", 30*MILLISECONDS_PER_MINUTE);
+        isRingingEnabled = sharedPreferences.getBoolean("pref_ringing_notification", true);
 
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                int notificationValue = Integer.parseInt( settingsPreferences.getString("pref_notification", "2") );
 
-                if(notificationValue != 0) {
+
+                if(notificationType != NO_NOTIFICATION) {
                     /*ricostruisco lo stato del servizio di notifiche prelevando il dato dalle shared prefereces*/
                     hasFirstNotificationHappened = sharedPreferences.getBoolean("hasFirstNotificationHappened", false);
 
-                    long notificationTimeMillis = MILLISECONDS_PER_MINUTE * Long.parseLong( settingsPreferences.getString("pref_period_notification", "30") );
-                    boolean isRingingEnabled = settingsPreferences.getBoolean("pref_ringing_notification", true);
-
                     long alarmTimeMillis = notificationTimeMillis - MILLISECONDS_PER_MINUTE;//per ora
                     long remainingTimeToEndMillis = endTimeMillis - System.currentTimeMillis();
-                    String debugNotification = "End: " + remainingTimeToEndMillis;
-                    debugNotification +=  ", "+ endTimeMillis;
-                    debugNotification += " Ring: "+ isRingingEnabled;
-                    debugNotification += " Flag: " + hasFirstNotificationHappened;
+                    String debugNotification = "End " + remainingTimeToEndMillis/1000;
+                    debugNotification += " NTs "+ notificationTimeMillis/1000;
+                    debugNotification += " Rng "+ isRingingEnabled;
+                    debugNotification += " Flg " + hasFirstNotificationHappened;
+                    debugNotification += " nTY "+notificationType;
                     sendNotification(debugNotification, false);
 
-                    /* sfrutto la cortocircuitazione dell'OR: l'unico caso in cui ammetto di inviare notifiche (di debug) quando
-                    * scendo sotto il tempo di allarme è quando è avvenuta la notifica che segnala all'utente che manca
-                    * tot tempo alla fine e quindi si è solo nello stato di attesa della notifica di allarme
-                    */
                     if ( remainingTimeToEndMillis > alarmTimeMillis ||
                             ((remainingTimeToEndMillis <= alarmTimeMillis) && hasFirstNotificationHappened)) {
-
                         if (!hasFirstNotificationHappened && remainingTimeToEndMillis < notificationTimeMillis
                                 && remainingTimeToEndMillis > alarmTimeMillis) {//notifica che manca tot tempo
-
                             /*
                             * inserisco nelle shared preferences il fatto che è avvenuta la notifica che segnala
                             * la mancanza di tot tempo alla fine, cosicche in caso di spegnimento del dispositivo
@@ -118,12 +114,11 @@ public class ParkAppService extends NotificationListenerService{
 
                             sendNotification("Mancano "+remainingTimeToEndMillis+" ms", false);
 
-                            if(notificationValue == SINGLE_NOTIFICATION ) {
+                            if(notificationType == SINGLE_NOTIFICATION ) {
                                 clearService();
                             }
-
                         } else if ((hasFirstNotificationHappened && remainingTimeToEndMillis <= alarmTimeMillis)
-                                    && notificationValue == DOUBLE_NOTIFICATION){//allarme
+                                    && notificationType == DOUBLE_NOTIFICATION){//allarme
                             sendNotification("ALLARME, mancano "+remainingTimeToEndMillis+" ms", isRingingEnabled);
                             clearService();
                         } else {
@@ -194,12 +189,14 @@ public class ParkAppService extends NotificationListenerService{
                         .setAutoCancel(true)
                         .build();
 
-
+        //
         if(isRingingEnabled) {
-            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             notification.sound = alarmSound;
+        } else {
+            notification.defaults |= Notification.DEFAULT_ALL;
         }
-        notification.defaults |= Notification.DEFAULT_ALL;
+
 
         // display the notification
         NotificationManager manager = (NotificationManager)
