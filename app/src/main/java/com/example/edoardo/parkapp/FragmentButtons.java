@@ -161,6 +161,7 @@ public class FragmentButtons extends Fragment {
                     editor.putLong("park_duration", duration);//per sola statistica nello storicoL
                     editor.putLong("endTimeMillis", endTimeMillis);//l'ora di fine è l'unico dato essenziale al servizio
                     editor.putBoolean("hasFirstNotificationHappened", false);
+                    editor.putLong("duration", duration);
                     editor.putInt("pref_notification", notificationType);
                     editor.putLong("pref_period_notification", notificationPeriod);
                     editor.putBoolean("pref_ringing_notification", isRingingEnabled);

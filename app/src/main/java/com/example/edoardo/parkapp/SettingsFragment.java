@@ -14,6 +14,7 @@ public class SettingsFragment extends PreferenceFragment {
     public static  final int DOUBLE_NOTIFICATION = 2;
     ListPreference prefNotification;
     ListPreference prefPeriodNotification;
+    CheckBoxPreference prefRingingNotification;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         prefNotification = (ListPreference)findPreference("pref_notification");
         prefPeriodNotification = (ListPreference)findPreference("pref_period_notification");
-        final CheckBoxPreference prefRingingNotification = (CheckBoxPreference) findPreference("pref_ringing_notification");
+        prefRingingNotification = (CheckBoxPreference) findPreference("pref_ringing_notification");
 
 
 
@@ -48,5 +49,23 @@ public class SettingsFragment extends PreferenceFragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        prefNotification = (ListPreference)findPreference("pref_notification");
+        prefPeriodNotification = (ListPreference)findPreference("pref_period_notification");
+        prefRingingNotification = (CheckBoxPreference) findPreference("pref_ringing_notification");
+        int notificationType = Integer.parseInt(prefNotification.getValue());
 
+        if(notificationType==NO_NOTIFICATION) {
+            prefPeriodNotification.setEnabled(false);
+            prefRingingNotification.setEnabled(false);
+        } else if( notificationType == SINGLE_NOTIFICATION) {
+            prefPeriodNotification.setEnabled(true);
+            prefRingingNotification.setEnabled(false);
+        } else {
+            prefPeriodNotification.setEnabled(true);
+            prefRingingNotification.setEnabled(true);
+        }
+    }
 }

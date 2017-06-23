@@ -43,6 +43,7 @@ public class ParkAppService extends NotificationListenerService{
     private int notificationType;
     private long notificationTimeMillis;
     private boolean isRingingEnabled;
+    private long duration;
 
     @Override
     public void onCreate() {
@@ -80,6 +81,7 @@ public class ParkAppService extends NotificationListenerService{
         notificationType = sharedPreferences.getInt("pref_notification", 2);
         notificationTimeMillis = sharedPreferences.getLong("pref_period_notification", 30*MILLISECONDS_PER_MINUTE);
         isRingingEnabled = sharedPreferences.getBoolean("pref_ringing_notification", true);
+        duration = sharedPreferences.getLong("duration", 0);
 
         TimerTask task = new TimerTask() {
             @Override
@@ -90,7 +92,12 @@ public class ParkAppService extends NotificationListenerService{
                     /*ricostruisco lo stato del servizio di notifiche prelevando il dato dalle shared prefereces*/
                     hasFirstNotificationHappened = sharedPreferences.getBoolean("hasFirstNotificationHappened", false);
 
-                    long alarmTimeMillis = notificationTimeMillis - MILLISECONDS_PER_MINUTE;//per ora
+                    long alarmTimeMillis = notificationTimeMillis /2;//- MILLISECONDS_PER_MINUTE;//per ora
+
+                    if(duration <= notificationTimeMillis) {
+                        alarmTimeMillis = duration / 2;
+                    }
+
                     long remainingTimeToEndMillis = endTimeMillis - System.currentTimeMillis();
                     String debugNotification = "End " + remainingTimeToEndMillis/1000;
                     debugNotification += " NTs "+ notificationTimeMillis/1000;
@@ -101,6 +108,7 @@ public class ParkAppService extends NotificationListenerService{
 
                     if ( remainingTimeToEndMillis > alarmTimeMillis ||
                             ((remainingTimeToEndMillis <= alarmTimeMillis) && hasFirstNotificationHappened)) {
+
                         if (!hasFirstNotificationHappened && remainingTimeToEndMillis < notificationTimeMillis
                                 && remainingTimeToEndMillis > alarmTimeMillis) {//notifica che manca tot tempo
                             /*
@@ -112,8 +120,9 @@ public class ParkAppService extends NotificationListenerService{
                             editor.putBoolean("hasFirstNotificationHappened", true);
                             editor.commit();
 
-                            sendNotification("Mancano "+remainingTimeToEndMillis+" ms", false);
-
+                            if( duration > notificationTimeMillis ) {
+                                sendNotification("Mancano " + remainingTimeToEndMillis + " ms", false);
+                            }
                             if(notificationType == SINGLE_NOTIFICATION ) {
                                 clearService();
                             }
@@ -125,8 +134,19 @@ public class ParkAppService extends NotificationListenerService{
                             //sendNotification("STATO NON PREVISTO "+remainingTimeToEndMillis+" ms", false);
                         }
                     } else {//invio una notifica di allarme scaduto (stato possibile se ho spento il telefono)
-                        sendNotification("ALLARME SCADUTO", false);
+
+                        String notificationString = "";
+
+                        if( remainingTimeToEndMillis <= 0 ) {
+                            notificationString = "SCADUTO DA "+ (-1*remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE)+" m";
+                        } else {
+                            notificationString = "MANCANO "+remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE+" m";
+                        }
+
+
+                        sendNotification(notificationString, isRingingEnabled);
                         clearService();
+
                     }
                 } else {
                     clearService();
