@@ -309,7 +309,6 @@ public class FragmentButtons extends Fragment {
                                     }
                                 });
                         alertDialog.show();
-
                     }
                     else{
                         Toast.makeText(getActivity(), "Devi prima salvare il parcheggio", Toast.LENGTH_SHORT).show();
