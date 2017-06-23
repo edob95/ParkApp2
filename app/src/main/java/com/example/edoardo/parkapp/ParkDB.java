@@ -57,12 +57,7 @@ public class ParkDB {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_HISTORY_TABLE);
-
-            db.execSQL("INSERT INTO history VALUES (0, 'Pagamento', '27/06/2017', '14:35', '15:35')");
-            db.execSQL("INSERT INTO history VALUES (1, 'Gratis', '15/05/2017', '15:35', '/')");
-
         }
-
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.d("History list", "Upgrading db from version " + oldVersion + " to " + newVersion);

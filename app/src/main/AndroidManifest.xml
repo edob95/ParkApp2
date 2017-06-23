@@ -33,6 +33,7 @@
 
     <uses-permission
         android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-feature
         android:glEsVersion="0x00030002"
@@ -68,8 +69,13 @@
         </activity>
         <service
             android:name=".ParkAppService"
-            android:exported="false">
+            android:exported="false"
+            android:stopWithTask="false">
+            <!--android:process=":ParkAppService">
+            svantaggi aprendo in un'altro processo occorrono meccanismi di IPC
+            per controllarne l'esecuzione-->
         </service>
+
         <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity
 
     private Location mLocation;
     private SharedPreferences sharedPreferences;
+    private ParkAppApplicationObject app;
 
 
     public boolean isOnline() {
@@ -193,17 +194,25 @@ public class MainActivity extends AppCompatActivity
                                 String date_db = begin_date;
                                 String orainizio_db = Integer.toString(begin_time_hour) + ":" + Integer.toString(begin_time_minute);
                                 String orafine_db;
-                                if(parkType!=0)
+                                if(parkType!=0) {
                                     orafine_db = Integer.toString(end_time_hour) + ":" + Integer.toString(end_time_minute);
-                                else
-                                    orafine_db="/";
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                } else {
+                                    orafine_db = "/";
+                                }
+
                                 Park park = new Park(parktype_db,date_db,orainizio_db,orafine_db);
-                                long insertId = db.insertPark(park);
+                                db.insertPark(park);
                                 dialog.dismiss();
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.clear().commit();
                                 currentPositionMarker.remove();
                                 hideButtons();
+
+
+                                //arresto il servizio se elimino il parcheggio
+
+                                Intent intentService = new Intent(app, ParkAppService.class);
+                                app.stopService(intentService);
                             }
                         });
                 alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "NO",
@@ -214,11 +223,6 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
                 alertDialog.show();
-
-
-
-
-
 
                 //cancella la sharedPreferences alla pressione del bottone
 
@@ -292,6 +296,9 @@ public class MainActivity extends AppCompatActivity
             parkDescriptionText += "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
         }
         park_description.setText(parkDescriptionText);
+        app = (ParkAppApplicationObject) getApplication();
+
+
 
     }
 

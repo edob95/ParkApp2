@@ -10,10 +10,11 @@ public class BootReceiver extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "REBOOTED", Toast.LENGTH_SHORT).show();
+
 
         Intent service = new Intent(context, ParkAppService.class);
         context.startService(service);
+        Toast.makeText(context, "REBOOTED", Toast.LENGTH_SHORT).show();
 
     }
 

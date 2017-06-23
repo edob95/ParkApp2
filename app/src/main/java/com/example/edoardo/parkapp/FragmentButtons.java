@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.provider.SyncStateContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,57 +119,51 @@ public class FragmentButtons extends Fragment {
             public void onClick(DialogInterface dialog, int id){
 
                 long currentTimeMillis = System.currentTimeMillis();
-                Date date = new Date(currentTimeMillis);                GregorianCalendar calendar = new GregorianCalendar();
+                Date date = new Date(currentTimeMillis);
+                GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(date);
-             /*   Toast.makeText(getActivity(),timePicker.getCurrentHour() + ":"
-                        + timePicker.getCurrentMinute(), Toast.LENGTH_SHORT).show();*/
-
-
-
 
                 int beginPickerHour = calendar.get(Calendar.HOUR_OF_DAY);
                 int beginPickerMinute = calendar.get(Calendar.MINUTE);
+
+                app = (ParkAppApplicationObject) (getActivity()).getApplication();
+                Intent intentService = new Intent(app, ParkAppService.class);
+                app.stopService(intentService);//arresto eventuale servizio di norifica in esecuzione
+
+                /*salvataggio ora inizio e tipo parcheggio sempre*/
                 editor = sharedPreferences.edit();
-
-
-                //SALVATAGGIO ORE E MINUTI
-
                 editor.putString("begin_date", Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)) + "/"
                         + Integer.toString(calendar.get(Calendar.MONTH)+1) + "/" +
                         Integer.toString(calendar.get(Calendar.YEAR)));
                 editor.putInt("begin_hour", calendar.get(Calendar.HOUR_OF_DAY));
                 editor.putInt("begin_minute", calendar.get(Calendar.MINUTE));
-                int timePickerHour = -1;
-                int timePickerMinute = -1;
-                long duration = -1;
-
                 editor.putInt("park_type", parkType);
+                editor.commit();
 
                 if( parkType == DISCO_ORARIO || parkType == PARCHIMETRO) {
 
-                    timePickerHour = timePicker.getCurrentHour();
-                    timePickerMinute = timePicker.getCurrentMinute();
+                    int timePickerHour = timePicker.getCurrentHour();
+                    int timePickerMinute = timePicker.getCurrentMinute();
+                    long duration = calculateDuration(timePickerHour, timePickerMinute, beginPickerHour, beginPickerMinute);
+                    long endTimeMillis = currentTimeMillis + duration;//dato essenziale al servizio
+
+                    /*in questo caso aggiungo alle shared preferences anche ora fine e durata*/
+                    editor = sharedPreferences.edit();
                     editor.putInt("end_hour", timePickerHour);
                     editor.putInt("end_minute", timePickerMinute);
-                    duration = calculateDuration(timePickerHour, timePickerMinute, beginPickerHour, beginPickerMinute);
-                    editor.putLong("park_duration", duration);
-                    editor.putLong("begin_time_millis", currentTimeMillis);
+                    editor.putLong("park_duration", duration);//per sola statistica nello storico
+                    editor.putLong("endTimeMillis", endTimeMillis);//l'ora di fine è l'unico dato essenziale al servizio
+                    editor.putBoolean("hasFirstNotificationHappened", false);
+                    editor.commit();
 
-                    app = (ParkAppApplicationObject) (getActivity()).getApplication();
-
-                    Intent service = new Intent(app, ParkAppService.class);
-                    app.stopService(service);
-                    app.startService(service);
-
-                    //.sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+                    app.startService(intentService);
 
                     double latitude = Double.parseDouble(sharedPreferences.getString("latitude","0"));
                     double longitude = Double.parseDouble(sharedPreferences.getString("longitude","0"));
-
                     Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
 
                 }
-                editor.commit();
+
                 ((MainActivity)getActivity()).saveLocation();
                 displayInfoPark();
 
@@ -262,7 +258,7 @@ public class FragmentButtons extends Fragment {
                         }
                         ////////////////////////////////////////////////////////////////
 
-
+                        SystemClock.sleep(1000);
                         android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getActivity()).create();
                         alertDialog.setTitle("Attenzione");
                         alertDialog.setMessage("Hai raggiunto il parcheggio?");
@@ -272,12 +268,12 @@ public class FragmentButtons extends Fragment {
                                         ParkDB db = new ParkDB(getActivity());
 
                                         sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-                                        int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);
-                                        int begin_time_minute = sharedPreferences.getInt("begin_minute", 0);
+                                        int begin_time_hour = sharedPreferences.getInt("begin_hour", -1);
+                                        int begin_time_minute = sharedPreferences.getInt("begin_minute", -1);
                                         String begin_date = sharedPreferences.getString("begin_date", " ");
-                                        int parkType = sharedPreferences.getInt("park_type", 0);
-                                        int end_time_hour = sharedPreferences.getInt("end_hour", 0);
-                                        int end_time_minute = sharedPreferences.getInt("end_minute", 0);
+                                        int parkType = sharedPreferences.getInt("park_type", -1);
+                                        int end_time_hour = sharedPreferences.getInt("end_hour", -1);
+                                        int end_time_minute = sharedPreferences.getInt("end_minute", -1);
 
                                         String parktype_db = intToParkType(parkType);
                                         String date_db = begin_date;
@@ -287,15 +283,20 @@ public class FragmentButtons extends Fragment {
                                             orafine_db = Integer.toString(end_time_hour) + ":" + Integer.toString(end_time_minute);
                                         else
                                             orafine_db="/";
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        Park park = new Park(parktype_db,date_db,orainizio_db,orafine_db);
-                                        long insertId = db.insertPark(park);
 
+                                        Park park = new Park(parktype_db,date_db,orainizio_db,orafine_db);
+                                        db.insertPark(park);
+
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
                                         editor.clear().commit();
                                         ((MainActivity)getActivity()).deleteMarker();
                                         ((MainActivity)getActivity()).hideButtons();
                                         dialog.dismiss();
 
+                                        //arresto il servizio
+                                        app = (ParkAppApplicationObject) (getActivity()).getApplication();
+                                        Intent intentservice = new Intent(app, ParkAppService.class);
+                                        app.stopService(intentservice);
 
 
                                     }
@@ -376,12 +377,12 @@ public class FragmentButtons extends Fragment {
     public void displayInfoPark(){
 
         sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-        int begin_time_hour = sharedPreferences.getInt("begin_hour", 0);
-        int begin_time_minute = sharedPreferences.getInt("begin_minute", 0);
+        int begin_time_hour = sharedPreferences.getInt("begin_hour", -1);
+        int begin_time_minute = sharedPreferences.getInt("begin_minute", -1);
         String begin_date = sharedPreferences.getString("begin_date", " ");
-        int parkType = sharedPreferences.getInt("park_type", 0);
-        int end_time_hour = sharedPreferences.getInt("end_hour", 0);
-        int end_time_minute = sharedPreferences.getInt("end_minute", 0);
+        int parkType = sharedPreferences.getInt("park_type", -1);
+        int end_time_hour = sharedPreferences.getInt("end_hour", -1);
+        int end_time_minute = sharedPreferences.getInt("end_minute", -1);
 
 
         park_id = (TextView) getActivity().findViewById(R.id.park_id_textview);
@@ -418,6 +419,5 @@ public class FragmentButtons extends Fragment {
         return duration;
 
     }
-
 
 }

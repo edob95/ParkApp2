@@ -30,25 +30,24 @@
 
     <string-array name="pref_notification_keys">
         <item>Nessuna</item>
-        <item>Temporizzata</item>
+        <item>Singola</item>
+        <item>Doppia</item>
     </string-array>
 
     <string-array name="pref_notification_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 
-    <string name="pref_notification_default">1</string>
-
-
-
-
+    <string name="pref_notification_default">2</string>
     <string name="pref_period_notification_title">Temporizzazione Notifiche</string>
     <string name="pref_period_notification_summary">Temporizzazione di notifiche desiderata prima della scadenza</string>
     <string name="pref_period_notification_dialog_title">Temporizzazione</string>
 
     <string-array name="pref_period_notification_keys">
         <item>30</item>
+        <item>20</item>
         <item>15</item>
         <item>10</item>
         <item>5</item>
@@ -56,6 +55,7 @@
 
     <string-array name="pref_period_notification_values">
         <item>30</item>
+        <item>20</item>
         <item>15</item>
         <item>10</item>
         <item>5</item>
