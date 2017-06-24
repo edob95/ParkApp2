@@ -18,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -116,15 +118,14 @@ public class MainActivity extends AppCompatActivity
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
             alertDialog.setTitle("Attenzione");
-            alertDialog.setMessage("ParkApp ha bisogno del GPS per funzionare");
+            alertDialog.setMessage("ParkApp ha bisogno del GPS per funzionare, riavviare l'app e attivare il gps");
             alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Attiva GPS",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
                             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(intent);
-                            recreate();
-
+                            dialog.dismiss();
+                            finish();
                         }
                     });
             alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Esci",
@@ -143,14 +144,13 @@ public class MainActivity extends AppCompatActivity
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
             alertDialog.setTitle("Attenzione");
-            alertDialog.setMessage("ParkApp ha bisogno della connessione internet per funzionare!");
+            alertDialog.setMessage("ParkApp ha bisogno della connessione internet per funzionare, riavviare l'app e attivare internet");
             alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Connetti",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                            recreate();
-
+                            finish();
                         }
                     });
             alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Esci",
