@@ -71,7 +71,7 @@ public class ParkAppService extends NotificationListenerService{
         * in base a quello decido cosa fare con le preferences*/
         Log.d("Park App", "Service destroyed");
         stopTimer();
-        Toast.makeText(this, "service destroyed", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "service destroyed", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
 
@@ -154,7 +154,7 @@ public class ParkAppService extends NotificationListenerService{
                         debugNotification += " Rng "+ isRingingEnabled;
                         debugNotification += " Flg " + hasFirstNotificationHappened;
                         debugNotification += " nTY "+notificationType;
-                        sendNotification(debugNotification, false);
+                        //sendNotification(debugNotification, false);
                     }
                 } else {//invio una notifica di allarme scaduto (stato possibile se ho spento il telefono)
 
