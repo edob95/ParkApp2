@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -66,6 +67,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.example.edoardo.parkapp.R.id.map;
+import static com.example.edoardo.parkapp.R.id.start;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
@@ -107,7 +109,35 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // new notificationThread().execute();
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.setTitle("Attenzione");
+            alertDialog.setMessage("ParkApp ha bisogno del GPS per funzionare");
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Attiva GPS",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                            recreate();
+
+                        }
+                    });
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Esci",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+
+                        }
+                    });
+            alertDialog.show();
+
+        }
         if (!isOnline()) {
             android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
             alertDialog.setCanceledOnTouchOutside(false);
