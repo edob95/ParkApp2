@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity
 
 
                                 //arresto il servizio se elimino il parcheggio
-
+                                app = (ParkAppApplicationObject) getApplication();
                                 Intent intentService = new Intent(app, ParkAppService.class);
                                 app.stopService(intentService);
                             }

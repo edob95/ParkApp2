@@ -77,6 +77,7 @@ public class ParkAppService extends NotificationListenerService{
 
     private void startTimer() {
 
+        /*prelevo variabili nelle shared preferences mutabili soltanto salvando un altro parcheggio*/
         endTimeMillis = sharedPreferences.getLong("endTimeMillis", -1);
         notificationType = sharedPreferences.getInt("pref_notification", 2);
         notificationTimeMillis = sharedPreferences.getLong("pref_period_notification", 30*MILLISECONDS_PER_MINUTE);
@@ -87,72 +88,90 @@ public class ParkAppService extends NotificationListenerService{
             @Override
             public void run() {
 
-
-                if(notificationType != NO_NOTIFICATION) {
-                    /*ricostruisco lo stato del servizio di notifiche prelevando il dato dalle shared prefereces*/
-                    hasFirstNotificationHappened = sharedPreferences.getBoolean("hasFirstNotificationHappened", false);
-
-                    long alarmTimeMillis = notificationTimeMillis /2;//- MILLISECONDS_PER_MINUTE;//per ora
-
-                    if(duration <= notificationTimeMillis) {
-                        alarmTimeMillis = duration / 2;
-                    }
-
-                    long remainingTimeToEndMillis = endTimeMillis - System.currentTimeMillis();
-                    String debugNotification = "End " + remainingTimeToEndMillis/1000;
-                    debugNotification += " NTs "+ notificationTimeMillis/1000;
-                    debugNotification += " Rng "+ isRingingEnabled;
-                    debugNotification += " Flg " + hasFirstNotificationHappened;
-                    debugNotification += " nTY "+notificationType;
-                    sendNotification(debugNotification, false);
-
-                    if ( remainingTimeToEndMillis > alarmTimeMillis ||
-                            ((remainingTimeToEndMillis <= alarmTimeMillis) && hasFirstNotificationHappened)) {
-
-                        if (!hasFirstNotificationHappened && remainingTimeToEndMillis < notificationTimeMillis
-                                && remainingTimeToEndMillis > alarmTimeMillis) {//notifica che manca tot tempo
-                            /*
-                            * inserisco nelle shared preferences il fatto che è avvenuta la notifica che segnala
-                            * la mancanza di tot tempo alla fine, cosicche in caso di spegnimento del dispositivo
-                            * e conseguente riaccensione si è in grado di ricostruire lo stato
-                            * */
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putBoolean("hasFirstNotificationHappened", true);
-                            editor.commit();
-
-                            if( duration > notificationTimeMillis ) {
-                                sendNotification("Mancano " + remainingTimeToEndMillis + " ms", false);
-                            }
-                            if(notificationType == SINGLE_NOTIFICATION ) {
-                                clearService();
-                            }
-                        } else if ((hasFirstNotificationHappened && remainingTimeToEndMillis <= alarmTimeMillis)
-                                    && notificationType == DOUBLE_NOTIFICATION){//allarme
-                            sendNotification("ALLARME, mancano "+remainingTimeToEndMillis+" ms", isRingingEnabled);
-                            clearService();
-                        } else {
-                            //sendNotification("STATO NON PREVISTO "+remainingTimeToEndMillis+" ms", false);
-                        }
-                    } else {//invio una notifica di allarme scaduto (stato possibile se ho spento il telefono)
-
-                        String notificationString = "";
-
-                        if( remainingTimeToEndMillis <= 0 ) {
-                            notificationString = "SCADUTO DA "+ (-1*remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE)+" m";
-                        } else {
-                            notificationString = "MANCANO "+remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE+" m";
-                        }
-
-
-                        sendNotification(notificationString, isRingingEnabled);
-                        clearService();
-
-                    }
-                } else {
+                /*arresto immediatamente il servizio  se l'utente ha impostato nessuna notifica*/
+                if(notificationType == NO_NOTIFICATION) {
                     clearService();
                 }
-            }
 
+                /*ricostruisco lo stato del servizio di notifiche prelevando il dato dalle shared prefereces*/
+                hasFirstNotificationHappened = sharedPreferences.getBoolean("hasFirstNotificationHappened", false);
+                long alarmTimeMillis = notificationTimeMillis / 2; //invia l'allarme a metà del tempo di notifica
+
+                /*se l'utente pazzo setta una durata inferiore al tempo di notifica da lui inserito
+                * assicuriamo comunuque un allarme a metà della durata impostata all'atto del salvataggio
+                * laddove questi abbia impostato una doppia notifica*/
+                if(duration <= notificationTimeMillis) {
+                    alarmTimeMillis = duration / 2;
+                }
+
+                /*calcolo quanto manca alla fine sulla base del tempo macchina*/
+                long remainingTimeToEndMillis = endTimeMillis - System.currentTimeMillis();
+
+                if ( remainingTimeToEndMillis > alarmTimeMillis ||
+                        ((remainingTimeToEndMillis <= alarmTimeMillis) && hasFirstNotificationHappened)) {
+
+                    /*se rientro tra tempo di notifica e tempo di allarme
+                    * SE entro qui è perché non è ancora avvenuto l'allarme
+                    * e valuto di rientrare */
+                    if (!hasFirstNotificationHappened
+                            && remainingTimeToEndMillis < notificationTimeMillis
+                            && remainingTimeToEndMillis > alarmTimeMillis) {//notifica che manca tot tempo
+                        /*
+                        * inserisco nelle shared preferences il fatto che è avvenuta la notifica che segnala
+                        * la mancanza di tot tempo alla fine, cosicche in caso di spegnimento del dispositivo
+                        * e conseguente riaccensione si è in grado di ricostruire lo stato
+                        * CAMBIO DI STATO
+                        * */
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("hasFirstNotificationHappened", true);
+                        editor.commit();
+
+                        /*solo se la durata del parcheggio è superiore al tempo di notifica
+                        * invio la notifica altrimenti arriverà solo la notifica di allarme*/
+                        if( duration > notificationTimeMillis ) {
+                            sendNotification("Mancano " + remainingTimeToEndMillis + " ms", false);
+                        }
+                        /*fermo il servizio se l'utente ha deciso di ricevere una sola notifica*/
+                        if(notificationType == SINGLE_NOTIFICATION ) {
+                            /*ESCO DAL SERVIZIO*/
+                            clearService();
+                        }
+
+                    /*  se la prima notifica è avvenuta invia un allarme
+                     * (condizione DOUBLE_NOTIFICATION ridondante finche non ci sono
+                     * altre opzioni, ma utile per rafforzare la condizione)*/
+                    } else if (hasFirstNotificationHappened
+                            && remainingTimeToEndMillis <= alarmTimeMillis
+                            && notificationType == DOUBLE_NOTIFICATION){
+
+                        sendNotification("ALLARME, mancano " + (remainingTimeToEndMillis/1000) +" s", isRingingEnabled);
+                        clearService();
+
+                    } else {
+                        /*QUI DENTRO ENTRO TUTTE LE VOLTE CHE NON DEVO INVIARE UNA NOTIFICA*/
+                        String debugNotification = "End " + remainingTimeToEndMillis/1000;
+                        debugNotification += " nTS "+ notificationTimeMillis/1000;
+                        debugNotification += " Rng "+ isRingingEnabled;
+                        debugNotification += " Flg " + hasFirstNotificationHappened;
+                        debugNotification += " nTY "+notificationType;
+                        sendNotification(debugNotification, false);
+                    }
+                } else {//invio una notifica di allarme scaduto (stato possibile se ho spento il telefono)
+
+                    /*significa che il dispositivo è stato spento prima della prima notifica
+                    * e riavviato dopo il tempo di allarme*/
+                    String notificationString = "";
+
+                    if( remainingTimeToEndMillis <= 0 ) {
+                        notificationString = "SCADUTO DA "+ (-1*remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE)+" m";
+                    } else {
+                        notificationString = "MANCANO "+remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE+" m";
+                    }
+                    sendNotification(notificationString, isRingingEnabled);
+                    clearService();
+
+                }
+            }
         };
 
         timer = new Timer(true);
