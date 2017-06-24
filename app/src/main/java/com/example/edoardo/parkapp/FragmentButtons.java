@@ -286,6 +286,8 @@ public class FragmentButtons extends Fragment {
                                         int end_time_hour = sharedPreferences.getInt("end_hour", -1);
                                         int end_time_minute = sharedPreferences.getInt("end_minute", -1);
 
+                                        String indirizzo_db = sharedPreferences.getString("citta", " ") + ", " +
+                                                sharedPreferences.getString("indirizzo", "");
                                         String parktype_db = intToParkType(parkType);
                                         String date_db = begin_date;
                                         String orainizio_db = Integer.toString(begin_time_hour) + ":" + Integer.toString(begin_time_minute);
@@ -295,7 +297,7 @@ public class FragmentButtons extends Fragment {
                                         else
                                             orafine_db="/";
 
-                                        Park park = new Park(parktype_db,date_db,orainizio_db,orafine_db);
+                                        Park park = new Park(indirizzo_db,parktype_db,date_db,orainizio_db,orafine_db);
                                         db.insertPark(park);
 
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -393,12 +395,15 @@ public class FragmentButtons extends Fragment {
         int parkType = sharedPreferences.getInt("park_type", -1);
         int end_time_hour = sharedPreferences.getInt("end_hour", -1);
         int end_time_minute = sharedPreferences.getInt("end_minute", -1);
-
+        String indirizzo = sharedPreferences.getString("citta", " ") + "\n" +
+                sharedPreferences.getString("indirizzo", "") + "\n";
 
         park_id = (TextView) getActivity().findViewById(R.id.park_id_textview);
         park_id.setText("Il tuo parcheggio");
         park_description = (TextView) getActivity().findViewById(R.id.park_description_textview);
-        String parkDescriptionText = intToParkType(parkType) + "\n";
+
+        String parkDescriptionText =  indirizzo;
+        parkDescriptionText += intToParkType(parkType) + "\n";
         Toast.makeText(getActivity(), Integer.toString(R.id.park_description_textview), Toast.LENGTH_SHORT).show();
 
             parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour

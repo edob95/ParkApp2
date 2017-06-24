@@ -26,23 +26,29 @@ public class ParkDB {
     public static final String HISTORY_ID= "_id";
     public static final int HISTORY_ID_COL= 0;
 
+    public static final String HISTORY_INDIRIZZO = "indirizzo";
+    public static final int HISTORY_INDIRIZZO_COL = 1;
+
     public static final String HISTORY_PARKTYPE= "park_type";
-    public static final int HISTORY_PARKTYPE_COL= 1;
+    public static final int HISTORY_PARKTYPE_COL= 2;
 
     public static final String HISTORY_DATE=  "date";
-    public static final int HISTORY_DATE_COL= 2;
+    public static final int HISTORY_DATE_COL= 3;
 
     public static final String HISTORY_ORAINIZIO= "ora_inizio";
-    public static final int HISTORY_ORAINIZIO_COL= 3;
+    public static final int HISTORY_ORAINIZIO_COL= 4;
 
     public static final String HISTORY_ORAFINE= "ora_fine";
-    public static final int HISTORY_ORAFINE_COL= 4;
+    public static final int HISTORY_ORAFINE_COL= 5;
+
+
 
     //CREATE AND DROP TABLE STATEMENTS
 
     public static final String CREATE_HISTORY_TABLE =
             "CREATE TABLE " + HISTORY_TABLE + " (" +
                     HISTORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    HISTORY_INDIRIZZO + " STRING, " +
                     HISTORY_PARKTYPE + " STRING, " +
                     HISTORY_DATE + " STRING, " +
                     HISTORY_ORAINIZIO + " STRING, " +
@@ -102,6 +108,7 @@ public class ParkDB {
         else {
             try {
                 Park park = new Park(
+                        cursor.getString(HISTORY_INDIRIZZO_COL),
                         cursor.getInt(HISTORY_ID_COL),
                         cursor.getString(HISTORY_PARKTYPE_COL),
                         cursor.getString(HISTORY_DATE_COL),
@@ -116,6 +123,7 @@ public class ParkDB {
     }
     public long insertPark(Park park){
         ContentValues cv = new ContentValues();
+        cv.put(HISTORY_INDIRIZZO, park.getIndirizzo());
         cv.put(HISTORY_PARKTYPE, park.getPark_type());
         cv.put(HISTORY_DATE, park.getDate());
         cv.put(HISTORY_ORAINIZIO, park.getOra_inizio());
@@ -128,6 +136,7 @@ public class ParkDB {
     public int updatePark(Park park){
         ContentValues cv = new ContentValues();
         cv.put(HISTORY_ID, park.getPark_id());
+        cv.put(HISTORY_INDIRIZZO, park.getIndirizzo());
         cv.put(HISTORY_PARKTYPE, park.getPark_type());
         cv.put(HISTORY_DATE, park.getDate());
         cv.put(HISTORY_ORAINIZIO, park.getOra_inizio());

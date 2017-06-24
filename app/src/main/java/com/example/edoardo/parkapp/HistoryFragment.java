@@ -27,13 +27,14 @@ public class HistoryFragment extends PreferenceFragment {
     //caricare il file delle preferenze a partire dal file xml
     private View view;
 
-    public String ids;
+    public String indirizzi;
     public String types;
     public String dates;
     public String begins;
     public String ends;
 
     //public TextView firstColoumn;
+    public TextView firstColoumn;
     public TextView secondColoumn;
     public TextView thirdColoumn;
     public TextView fourthColoumn;
@@ -44,13 +45,14 @@ public class HistoryFragment extends PreferenceFragment {
         // inflate the layout for this fragment
         view = inflater.inflate(R.layout.history_fragment_layout,
                 container, false);
-        //firstColoumn = (TextView) view.findViewById(R.id.textview_db_id);
+        firstColoumn = (TextView) view.findViewById(R.id.textview_db_indirizzo);
         secondColoumn = (TextView) view.findViewById(R.id.textview_db_parktype);
         thirdColoumn = (TextView) view.findViewById(R.id.textview_db_date);
         fourthColoumn =(TextView) view.findViewById(R.id.textview_db_orainizio);
         fifthColoumn =(TextView) view.findViewById(R.id.textview_db_orafine);
 
         //firstColoumn.setText(ids);
+        firstColoumn.setText(indirizzi);
         secondColoumn.setText(types);
         thirdColoumn.setText(dates);
         fourthColoumn.setText(begins);
@@ -66,7 +68,7 @@ public class HistoryFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ParkDB db = new ParkDB(getActivity());
-        //StringBuilder sbid = new StringBuilder();
+        StringBuilder sbIndirizzi = new StringBuilder();
         StringBuilder sbtype = new StringBuilder();
         StringBuilder sbdate = new StringBuilder();
         StringBuilder sbbegin = new StringBuilder();
@@ -75,13 +77,14 @@ public class HistoryFragment extends PreferenceFragment {
 
         ArrayList<Park> parks = db.getParks();
         for (Park p : parks){
-            //sbid.append(p.getPark_id() + "\n");
+            sbIndirizzi.append(p.getIndirizzo() + "\n");
             sbtype.append(p.getPark_type() + "\n");
             sbdate.append(p.getDate() + "\n");
             sbbegin.append(p.getOra_inizio() + "\n");
             sbend.append(p.getOra_fine() + "\n");
         }
         //ids=sbid.toString();
+        indirizzi = sbIndirizzi.toString();
         types=sbtype.toString();
         dates=sbdate.toString();
         begins=sbbegin.toString();

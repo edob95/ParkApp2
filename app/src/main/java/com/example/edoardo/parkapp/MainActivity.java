@@ -68,6 +68,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
+import static com.example.edoardo.parkapp.R.id.add;
 import static com.example.edoardo.parkapp.R.id.map;
 import static com.example.edoardo.parkapp.R.id.start;
 
@@ -166,6 +167,8 @@ public class MainActivity extends AppCompatActivity
                                 int parkType = sharedPreferences.getInt("park_type", 0);
                                 int end_time_hour = sharedPreferences.getInt("end_hour", 0);
                                 int end_time_minute = sharedPreferences.getInt("end_minute", 0);
+                                String indirizzo_db = sharedPreferences.getString("citta", " ") + ", " +
+                                        sharedPreferences.getString("indirizzo", "");
                                 FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
                                 String parktype_db = buttonsFragment.intToParkType(parkType);
                                 String date_db = begin_date;
@@ -177,7 +180,7 @@ public class MainActivity extends AppCompatActivity
                                     orafine_db = "/";
                                 }
 
-                                Park park = new Park(parktype_db,date_db,orainizio_db,orafine_db);
+                                Park park = new Park(indirizzo_db, parktype_db,date_db,orainizio_db,orafine_db);
                                 db.insertPark(park);
                                 dialog.dismiss();
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -301,6 +304,10 @@ public class MainActivity extends AppCompatActivity
        /* FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
         buttonsFragment.displayInfoPark();*/
 
+        String indirizzo = sharedPreferences.getString("citta", " ") + "\n" +
+                sharedPreferences.getString("indirizzo", "") + "\n";
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -317,7 +324,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
-        String parkDescriptionText = buttonsFragment.intToParkType(parkType) + "\n";
+        String parkDescriptionText = indirizzo;
+        parkDescriptionText += buttonsFragment.intToParkType(parkType) + "\n";
         park_id = (TextView) header.findViewById(R.id.park_id_textview);
         park_description = (TextView) header.findViewById(R.id.park_description_textview);
         park_id.setText("Il tuo parcheggio");
@@ -385,6 +393,7 @@ public class MainActivity extends AppCompatActivity
     public void deleteMarker(){
         currentPositionMarker.remove();
     }
+
     public void saveLocation() {
         hideButtons();
         //Toast.makeText(this, "triggereato", Toast.LENGTH_SHORT).show();
@@ -395,6 +404,24 @@ public class MainActivity extends AppCompatActivity
         //Toast.makeText(this, (float)mLocation.getLatitude()+" "+(float)mLocation.getLongitude(), Toast.LENGTH_SHORT).show();
         String lat = Double.toString(mLocation.getLatitude());
         String lon = Double.toString(mLocation.getLongitude());
+
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+        double latitude = mLocation.getLatitude();
+        double longitude= mLocation.getLongitude();
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            String indirizzo = addresses.get(0).getAddressLine(0);
+            String citta = addresses.get(0).getLocality();
+            editor.putString("citta", citta);
+            editor.putString("indirizzo",indirizzo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         editor.putString("latitude", lat);
         editor.putString("longitude", lon);
         editor.commit();
@@ -409,7 +436,7 @@ public class MainActivity extends AppCompatActivity
         LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
         mMap.clear();
         currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition)
-                .title("Dio, sei tu?")
+                .title("Il tuo parcheggio")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
     }

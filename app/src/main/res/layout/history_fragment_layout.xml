@@ -8,26 +8,36 @@
     android:layout_height="match_parent"
     >
     <TableRow>
-
+        <TextView
+            android:textSize="15dp"
+            android:id="@+id/label_db_indirizzo"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text = "Indirizzo"
+            android:textColor="#000000" />
         <TextView
             android:id="@+id/label_db_parktype"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Tipo parcheggio"
+            android:text="Tipo"
+            android:textSize="15dp"
             android:textColor="#000000" />
         <TextView
+            android:textSize="15dp"
             android:id="@+id/label_db_date"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#000000"
             android:text="Data" />
         <TextView
+            android:textSize="15dp"
             android:id="@+id/label_db_orainizio"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#000000"
             android:text="Ora inizio" />
         <TextView
+            android:textSize="15dp"
             android:id="@+id/label_db_orafine"
             android:layout_weight="1"
             android:gravity="center"
@@ -36,32 +46,35 @@
 
     </TableRow>
     <TableRow>
-        <!--
         <TextView
-            android:id="@+id/textview_db_id"
+            android:textSize="10dp"
+            android:id="@+id/textview_db_indirizzo"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="?attr/colorPrimary" />
-        -->
         <TextView
+            android:textSize="10dp"
             android:id="@+id/textview_db_parktype"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="?attr/colorPrimary" />
 
         <TextView
+            android:textSize="10dp"
             android:id="@+id/textview_db_date"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="?attr/colorPrimary" />
 
         <TextView
+            android:textSize="10dp"
             android:id="@+id/textview_db_orainizio"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="?attr/colorPrimary" />
 
         <TextView
+            android:textSize="10dp"
             android:id="@+id/textview_db_orafine"
             android:layout_weight="1"
             android:gravity="center"
