@@ -1,9 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+    <TableRow>
+
+        <TextView
+            android:id="@+id/label_db_parktype"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Tipo parcheggio"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/label_db_date"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:text="Data" />
+
+        <TextView
+            android:id="@+id/label_db_orainizio"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:text="Ora inizio" />
+
+        <TextView
+            android:id="@+id/label_db_orafine"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:text="Ora fine" />
+
+    </TableRow>
     <TableRow>
         <!--
         <TextView
@@ -38,3 +72,4 @@
 
     </TableRow>
 </TableLayout>
+</ScrollView>
