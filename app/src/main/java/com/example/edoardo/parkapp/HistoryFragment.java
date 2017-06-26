@@ -17,78 +17,50 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class HistoryFragment extends PreferenceFragment {
     //costruisco una classe esterna che una volta istanziata permette all'atto della creazione di
     //caricare il file delle preferenze a partire dal file xml
     private View view;
 
-    public String indirizzi;
-    public String types;
-    public String dates;
-    public String begins;
-    public String ends;
-
-    //public TextView firstColoumn;
-    public TextView firstColoumn;
-    public TextView secondColoumn;
-    public TextView thirdColoumn;
-    public TextView fourthColoumn;
-    public TextView fifthColoumn;
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // inflate the layout for this fragment
         view = inflater.inflate(R.layout.history_fragment_layout,
                 container, false);
-        firstColoumn = (TextView) view.findViewById(R.id.textview_db_indirizzo);
-        secondColoumn = (TextView) view.findViewById(R.id.textview_db_parktype);
-        thirdColoumn = (TextView) view.findViewById(R.id.textview_db_date);
-        fourthColoumn =(TextView) view.findViewById(R.id.textview_db_orainizio);
-        fifthColoumn =(TextView) view.findViewById(R.id.textview_db_orafine);
 
-        //firstColoumn.setText(ids);
-        firstColoumn.setText(indirizzi);
-        secondColoumn.setText(types);
-        thirdColoumn.setText(dates);
-        fourthColoumn.setText(begins);
-        fifthColoumn.setText(ends);
+        ParkDB db = new ParkDB(getActivity());
+
+        ArrayList<Park> parks = db.getParks();
+        ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+        for (Park p : parks){
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("dateandaddress", p.getDate() + "    " + p.getIndirizzo());
+            map.put("typeandduration", p.getPark_type() + "    " + p.getOra_inizio() + " - " + p.getOra_fine());
+            data.add(map);
+        }
+        int resource = R.layout.listview_item;
+        String[] from = {"dateandaddress", "typeandduration"};
+        int[] to = {R.id.parkDateandAddressTextView, R.id.parkTypeandDurationTextView};
+
+
+        SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, resource, from, to);
+        ListView saveListView = (ListView)view.findViewById(R.id.historyListView);
+        saveListView.setAdapter(adapter);
 
         return view;
     }
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ParkDB db = new ParkDB(getActivity());
-        StringBuilder sbIndirizzi = new StringBuilder();
-        StringBuilder sbtype = new StringBuilder();
-        StringBuilder sbdate = new StringBuilder();
-        StringBuilder sbbegin = new StringBuilder();
-        StringBuilder sbend = new StringBuilder();
-
-
-        ArrayList<Park> parks = db.getParks();
-        for (Park p : parks){
-            sbIndirizzi.append(p.getIndirizzo() + "\n");
-            sbtype.append(p.getPark_type() + "\n");
-            sbdate.append(p.getDate() + "\n");
-            sbbegin.append(p.getOra_inizio() + "\n");
-            sbend.append(p.getOra_fine() + "\n");
-        }
-        //ids=sbid.toString();
-        indirizzi = sbIndirizzi.toString();
-        types=sbtype.toString();
-        dates=sbdate.toString();
-        begins=sbbegin.toString();
-        ends=sbend.toString();
 
     }
 }

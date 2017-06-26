@@ -173,10 +173,10 @@ public class MainActivity extends AppCompatActivity
                                 FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
                                 String parktype_db = buttonsFragment.intToParkType(parkType);
                                 String date_db = begin_date;
-                                String orainizio_db = Integer.toString(begin_time_hour) + ":" + Integer.toString(begin_time_minute);
+                                String orainizio_db = HistoryActivity.getXXFormat(begin_time_hour) + ":" + HistoryActivity.getXXFormat(begin_time_minute);
                                 String orafine_db;
                                 if(parkType!=0) {
-                                    orafine_db = Integer.toString(end_time_hour) + ":" + Integer.toString(end_time_minute);
+                                    orafine_db = HistoryActivity.getXXFormat(end_time_hour) + ":" + HistoryActivity.getXXFormat(end_time_minute);
                                 } else {
                                     orafine_db = "/";
                                 }
@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity
 
             alertDialog.setCanceledOnTouchOutside(true);
             alertDialog.setCancelable(true);
-            alertDialog.setTitle("Questa");
+            alertDialog.setTitle("Informazioni");
             alertDialog.show();
 
         }

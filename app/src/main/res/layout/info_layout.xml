@@ -2,36 +2,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:src="@drawable/unige"
+        android:id="@+id/imageView3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:src="@drawable/unige" />
 
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp">
 
         <TextView
             android:id="@+id/info_relatore"
-            android:text ="@string/info_relatore"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/info_relatore"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/nome_relatore"
-            android:text ="@string/nome_relatore"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/nome_relatore"
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/info_sviluppatori"
-            android:text ="@string/info_sviluppatori"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/info_sviluppatori"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/nomi_sviluppatori"
-            android:text ="@string/nomi_sviluppatori"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/nomi_sviluppatori"
+            android:textSize="16sp" />
 
 
+    </LinearLayout>
 
 </LinearLayout>
