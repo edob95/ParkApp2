@@ -241,6 +241,7 @@ public class ParkAppService extends NotificationListenerService{
         NotificationManager manager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
         final int NOTIFICATION_ID = 1;
+        notification.priority = Notification.PRIORITY_HIGH;
         manager.notify(NOTIFICATION_ID, notification);
 
     }

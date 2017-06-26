@@ -75,4 +75,14 @@ public class HistoryActivity extends AppCompatActivity{
                 return true;
         }
     }
+
+    public static String getXXFormat( int n ) {
+
+        String nString = Integer.toString(n);
+        if(n >= 0 && n < 10 ) {
+            nString = "0"+n;
+        }
+        return nString;
+
+    }
 }

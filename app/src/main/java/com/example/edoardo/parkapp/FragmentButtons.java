@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -131,6 +132,7 @@ public class FragmentButtons extends Fragment {
                 app.stopService(intentService);//arresto eventuale servizio di norifica in esecuzione
 
                 /*salvataggio ora inizio e tipo parcheggio sempre*/
+
                 editor = sharedPreferences.edit();
                 editor.putString("begin_date", Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)) + "/"
                         + Integer.toString(calendar.get(Calendar.MONTH)+1) + "/" +
@@ -406,10 +408,16 @@ public class FragmentButtons extends Fragment {
         parkDescriptionText += intToParkType(parkType) + "\n";
         Toast.makeText(getActivity(), Integer.toString(R.id.park_description_textview), Toast.LENGTH_SHORT).show();
 
-            parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour
-                    + ":" + begin_time_minute + "\n";
+        String beginHourString = HistoryActivity.getXXFormat( begin_time_hour );
+        String beginMinuteString = HistoryActivity.getXXFormat( begin_time_minute );
+        String endHourString = HistoryActivity.getXXFormat( end_time_hour );
+        String endMinuteString = HistoryActivity.getXXFormat( end_time_minute );
+
+        parkDescriptionText += "Data: " + begin_date + "\n";
+        parkDescriptionText += "Ora inizio: " + beginHourString + ":" + beginMinuteString + "\n";
+
         if(parkType != GRATUITO) {
-            parkDescriptionText +=  "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
+            parkDescriptionText +=  "Ora fine : " + endHourString + ":" + endMinuteString + "\n";
         }
         park_description.setText(parkDescriptionText);
 
@@ -434,5 +442,7 @@ public class FragmentButtons extends Fragment {
         return duration;
 
     }
+
+
 
 }
