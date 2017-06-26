@@ -24,14 +24,16 @@
         <item>Parchimetro</item>
     </string-array>
 
-    <string name="pref_notification_title">Notifiche</string>
-    <string name="pref_notification_summary">Tipologia di notifiche desiderata</string>
-    <string name="pref_notification_dialog_title">Tipologia</string>
+    <string name="pref_notification_title">Tipologia notifiche</string>
+    <string name="pref_notification_summary">
+        \"Doppia notifica\" invia un secondo avviso a metà del tempo rimanente dalla ricezione del primo
+    </string>
+    <string name="pref_notification_dialog_title">Tipologia notifiche</string>
 
     <string-array name="pref_notification_keys">
         <item>Nessuna</item>
-        <item>Singola</item>
-        <item>Doppia</item>
+        <item>Singola notifica</item>
+        <item>Doppia notifica</item>
     </string-array>
 
     <string-array name="pref_notification_values">
@@ -41,16 +43,18 @@
     </string-array>
 
     <string name="pref_notification_default">2</string>
-    <string name="pref_period_notification_title">Temporizzazione Notifiche</string>
-    <string name="pref_period_notification_summary">Temporizzazione di notifiche desiderata prima della scadenza</string>
-    <string name="pref_period_notification_dialog_title">Temporizzazione</string>
+    <string name="pref_period_notification_title">Promemoria scadenza parcheggio</string>
+    <string name="pref_period_notification_summary">
+        Indicare a quanti minuti dalla fine del parcheggio si desidera ricevere la prima notifica
+    </string>
+    <string name="pref_period_notification_dialog_title">Promemoria scadenza parcheggio</string>
 
     <string-array name="pref_period_notification_keys">
-        <item>30</item>
-        <item>20</item>
-        <item>15</item>
-        <item>10</item>
-        <item>5</item>
+        <item>30 minuti</item>
+        <item>20 minuti</item>
+        <item>15 minuti</item>
+        <item>10 minuti</item>
+        <item>5 minuti</item>
     </string-array>
 
     <string-array name="pref_period_notification_values">
@@ -63,7 +67,19 @@
 
     <string name="pref_period_notification_default">30</string>
 
-    <string name="pref_ringing_title">Notifica Sonora?</string>
-    <string name="pref_ringing_summary">Segnalazione sonora a metà intervallo tra notifica e scadenza</string>
+    <string name="pref_ringing_title">Allarme</string>
+    <string name="pref_ringing_summary">
+        Scegliere se la seconda notifica attiva l\'allarme (squillo del telefono)
+    </string>
+
+    <string name = "info_relatore">Relatore</string>
+    <string name = "nome_relatore">Alessio Merlo</string>
+
+    <string name = "info_sviluppatori">Sviluppatori  </string>
+    <string name = "nomi_sviluppatori">
+        Bernardi Edoardo\n
+        Pastore Niko\n
+        Remus Alberto
+    </string>
 
 </resources>

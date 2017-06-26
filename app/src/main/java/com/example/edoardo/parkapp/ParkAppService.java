@@ -129,7 +129,7 @@ public class ParkAppService extends NotificationListenerService{
                         /*solo se la durata del parcheggio è superiore al tempo di notifica
                         * invio la notifica altrimenti arriverà solo la notifica di allarme*/
                         if( duration > notificationTimeMillis ) {
-                            sendNotification("Mancano " + remainingTimeToEndMillis + " ms", false);
+                            sendNotification("Mancano " + notificationTimeMillis/MILLISECONDS_PER_MINUTE + " minuti alla scadenza del parcheggio", false);
                         }
                         /*fermo il servizio se l'utente ha deciso di ricevere una sola notifica*/
                         if(notificationType == SINGLE_NOTIFICATION ) {
@@ -144,16 +144,16 @@ public class ParkAppService extends NotificationListenerService{
                             && remainingTimeToEndMillis <= alarmTimeMillis
                             && notificationType == DOUBLE_NOTIFICATION){
 
-                        sendNotification("ALLARME, mancano " + (remainingTimeToEndMillis/1000) +" s", isRingingEnabled);
+                        sendNotification("Il posteggio sta per scadere", isRingingEnabled);
                         clearService();
 
                     } else {
                         /*QUI DENTRO ENTRO TUTTE LE VOLTE CHE NON DEVO INVIARE UNA NOTIFICA*/
-                        String debugNotification = "End " + remainingTimeToEndMillis/1000;
+                        /*String debugNotification = "End " + remainingTimeToEndMillis/1000;
                         debugNotification += " nTS "+ notificationTimeMillis/1000;
                         debugNotification += " Rng "+ isRingingEnabled;
                         debugNotification += " Flg " + hasFirstNotificationHappened;
-                        debugNotification += " nTY "+notificationType;
+                        debugNotification += " nTY "+notificationType;*/
                         //sendNotification(debugNotification, false);
                     }
                 } else {//invio una notifica di allarme scaduto (stato possibile se ho spento il telefono)
@@ -163,9 +163,9 @@ public class ParkAppService extends NotificationListenerService{
                     String notificationString = "";
 
                     if( remainingTimeToEndMillis <= 0 ) {
-                        notificationString = "SCADUTO DA "+ (-1*remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE)+" m";
+                        notificationString = "Il posteggio è scaduto";
                     } else {
-                        notificationString = "MANCANO "+remainingTimeToEndMillis/MILLISECONDS_PER_MINUTE+" m";
+                        notificationString = "Il posteggio sta per scadere";
                     }
                     sendNotification(notificationString, isRingingEnabled);
                     clearService();

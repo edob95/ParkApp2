@@ -30,6 +30,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -365,6 +366,19 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
 
         } else if (id == R.id.nav_info) {
+
+
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.info_layout,null);
+
+
+            android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
+            alertDialog.setView(dialogView);
+
+            alertDialog.setCanceledOnTouchOutside(true);
+            alertDialog.setCancelable(true);
+            alertDialog.setTitle("Questa");
+            alertDialog.show();
 
         }
 
