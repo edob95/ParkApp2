@@ -76,6 +76,8 @@ public class HistoryActivity extends AppCompatActivity{
         }
     }
 
+
+    //miglioriamo sto nome?
     public static String getXXFormat( int n ) {
 
         String nString = Integer.toString(n);
