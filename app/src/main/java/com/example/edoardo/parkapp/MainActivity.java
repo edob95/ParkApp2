@@ -410,50 +410,57 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void saveLocation() {
-        hideButtons();
-        //Toast.makeText(this, "triggereato", Toast.LENGTH_SHORT).show();
-        sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        TextView park_id = (TextView) findViewById(R.id.park_id_textview);
-        park_id.setText("Il tuo parcheggio");
-        //Toast.makeText(this, (float)mLocation.getLatitude()+" "+(float)mLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-        String lat = Double.toString(mLocation.getLatitude());
-        String lon = Double.toString(mLocation.getLongitude());
+
+        if(mLocation != null ) {
+
+            hideButtons();
+            //Toast.makeText(this, "triggereato", Toast.LENGTH_SHORT).show();
+            sharedPreferences = this.getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            TextView park_id = (TextView) findViewById(R.id.park_id_textview);
+            park_id.setText("Il tuo parcheggio");
+            //Toast.makeText(this, (float)mLocation.getLatitude()+" "+(float)mLocation.getLongitude(), Toast.LENGTH_SHORT).show();
 
 
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-        double latitude = mLocation.getLatitude();
-        double longitude= mLocation.getLongitude();
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            String indirizzo = addresses.get(0).getAddressLine(0);
-            String citta = addresses.get(0).getLocality();
-            editor.putString("citta", citta);
-            editor.putString("indirizzo",indirizzo);
-        } catch (IOException e) {
-            e.printStackTrace();
+            String lat = Double.toString(mLocation.getLatitude());
+            String lon = Double.toString(mLocation.getLongitude());
+
+
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(this, Locale.getDefault());
+            double latitude = mLocation.getLatitude();
+            double longitude = mLocation.getLongitude();
+            try {
+                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                String indirizzo = addresses.get(0).getAddressLine(0);
+                String citta = addresses.get(0).getLocality();
+                editor.putString("citta", citta);
+                editor.putString("indirizzo", indirizzo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            editor.putString("latitude", lat);
+            editor.putString("longitude", lon);
+            editor.commit();
+
+            //Toast.makeText(this, mLocation.getLongitude()+" "+ mLocation.getLatitude(), Toast.LENGTH_SHORT).show();
+
+
+            //remove previous and add the one
+            if (currentPositionMarker != null) {
+                currentPositionMarker.remove();
+            }
+            LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+            mMap.clear();
+            currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition)
+                    .title("Il tuo parcheggio")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        } else {
+            Toast.makeText(this, "Impossibile accedere alla posizione", Toast.LENGTH_LONG).show();
         }
-
-
-        editor.putString("latitude", lat);
-        editor.putString("longitude", lon);
-        editor.commit();
-
-        //Toast.makeText(this, mLocation.getLongitude()+" "+ mLocation.getLatitude(), Toast.LENGTH_SHORT).show();
-
-
-        //remove previous and add the one
-        if (currentPositionMarker != null) {
-            currentPositionMarker.remove();
-        }
-        LatLng currentPosition = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-        mMap.clear();
-        currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition)
-                .title("Il tuo parcheggio")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
     }
 
     @Override

@@ -173,7 +173,7 @@ public class FragmentButtons extends Fragment {
 
                     double latitude = Double.parseDouble(sharedPreferences.getString("latitude","0"));
                     double longitude = Double.parseDouble(sharedPreferences.getString("longitude","0"));
-                    Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -336,7 +336,7 @@ public class FragmentButtons extends Fragment {
 
                     ((MainActivity)getActivity()).showNearbParks();
 
-                    Toast.makeText(getActivity(), "Hai premuto NEARBY", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Hai premuto NEARBY", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -406,7 +406,6 @@ public class FragmentButtons extends Fragment {
 
         String parkDescriptionText =  indirizzo;
         parkDescriptionText += intToParkType(parkType) + "\n";
-        Toast.makeText(getActivity(), Integer.toString(R.id.park_description_textview), Toast.LENGTH_SHORT).show();
 
         String beginHourString = HistoryActivity.getXXFormat( begin_time_hour );
         String beginMinuteString = HistoryActivity.getXXFormat( begin_time_minute );

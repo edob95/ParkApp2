@@ -76,9 +76,7 @@
     <string name = "nome_relatore">Alessio Merlo</string>
 
     <string name = "info_sviluppatori">Sviluppatori  </string>
-    <string name = "nomi_sviluppatori">Bernardi Edoardo\n
-        Pastore Niko\n
-        Remus Alberto
+    <string name = "nomi_sviluppatori">Bernardi Edoardo\nPastore Niko\nRemus Alberto
     </string>
 
 </resources>
