@@ -160,14 +160,9 @@ public class ParkAppService extends NotificationListenerService{
 
                     /*significa che il dispositivo è stato spento prima della prima notifica
                     * e riavviato dopo il tempo di allarme*/
-                    String notificationString = "";
-
-                    if( remainingTimeToEndMillis <= 0 ) {
-                        notificationString = "Il posteggio è scaduto";
-                    } else {
-                        notificationString = "Il posteggio sta per scadere";
+                    if( remainingTimeToEndMillis > 0 ) {
+                        sendNotification("Il posteggio sta per scadere", isRingingEnabled);
                     }
-                    sendNotification(notificationString, isRingingEnabled);
                     clearService();
 
                 }

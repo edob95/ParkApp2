@@ -235,19 +235,10 @@ public class FragmentButtons extends Fragment {
                     if(checkExistingParks()){
                     displayOptionsDialog();
                     }
-                   /* ((MainActivity)getActivity()).saveLocation();
 
-                    displayInfoPark();
-                    //.sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-
-                    double latitude = Double.parseDouble(sharedPreferences.getString("latitude","0"));
-                    double longitude = Double.parseDouble(sharedPreferences.getString("longitude","0"));
-
-                    Toast.makeText(getActivity(), latitude+" "+longitude, Toast.LENGTH_SHORT).show();
-                    */
                     break;
                 case R.id.button_find:
-                    // nuova modifica///////////////////////////////////////////////////
+
                     sharedPreferences = getActivity().getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
                     int parkType = sharedPreferences.getInt("park_type", -1);
                     String destinationLatitudeString = sharedPreferences.getString("latitude","");
@@ -269,7 +260,7 @@ public class FragmentButtons extends Fragment {
                                             + destinationLatitude + "," + destinationLongitude));
                             startActivity(navigation);
                         }
-                        ////////////////////////////////////////////////////////////////
+
 
                         SystemClock.sleep(1000);
                         android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getActivity()).create();
@@ -329,14 +320,11 @@ public class FragmentButtons extends Fragment {
                         Toast.makeText(getActivity(), "Devi prima salvare il parcheggio", Toast.LENGTH_SHORT).show();
                     }
                     break;
-               /* case R.id.button_config:
-                    displayOptionsDialog();
-                    break;*/
+
                 case R.id.button_nearby_parks:
 
                     ((MainActivity)getActivity()).showNearbParks();
 
-                    //Toast.makeText(getActivity(), "Hai premuto NEARBY", Toast.LENGTH_SHORT).show();
                     break;
             }
         }

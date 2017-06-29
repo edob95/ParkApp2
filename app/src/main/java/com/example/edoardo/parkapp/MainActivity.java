@@ -300,14 +300,15 @@ public class MainActivity extends AppCompatActivity
         int parkType = sharedPreferences.getInt("park_type", -1);
         int end_time_hour = sharedPreferences.getInt("end_hour", -1);
         int end_time_minute = sharedPreferences.getInt("end_minute", -1);
-        /*Toast.makeText(this, begin_time_hour + ":" + begin_time_minute + " " + begin_date + " " + parkType + " " +
-                end_time_hour + " " + end_time_minute, Toast.LENGTH_SHORT).show();*/
-       /* FragmentButtons buttonsFragment = (FragmentButtons) getFragmentManager().findFragmentById(R.id.fragment_buttons);
-        buttonsFragment.displayInfoPark();*/
+
 
         String indirizzo = sharedPreferences.getString("citta", " ") + "\n" +
                 sharedPreferences.getString("indirizzo", "") + "\n";
 
+        String beginHourString = HistoryActivity.getXXFormat( begin_time_hour );
+        String beginMinuteString = HistoryActivity.getXXFormat( begin_time_minute );
+        String endHourString = HistoryActivity.getXXFormat( end_time_hour );
+        String endMinuteString = HistoryActivity.getXXFormat( end_time_minute );
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -330,10 +331,10 @@ public class MainActivity extends AppCompatActivity
         park_id = (TextView) header.findViewById(R.id.park_id_textview);
         park_description = (TextView) header.findViewById(R.id.park_description_textview);
         park_id.setText("Il tuo parcheggio");
-        parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + begin_time_hour
-                + ":" + begin_time_minute + "\n";
+        parkDescriptionText += "Data: " + begin_date + "\n" + "Ora inizio: " + beginHourString
+                + ":" + beginMinuteString + "\n";
         if (parkType != buttonsFragment.GRATUITO) {
-            parkDescriptionText += "Ora fine : " + end_time_hour + ":" + end_time_minute + "\n";
+            parkDescriptionText += "Ora fine : " + endHourString + ":" + endMinuteString + "\n";
         }
         park_description.setText(parkDescriptionText);
         app = (ParkAppApplicationObject) getApplication();
@@ -564,17 +565,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        /*
-        //remove previous and add the one
-        if(currentPositionMarker != null){
-            currentPositionMarker.remove();
-        }
-        LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-        currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("enac oiD"));
-        */
 
         mLocation = location;
-        //Toast.makeText(this, mLocation.getLatitude() + " " + mLocation.getLongitude() + " :)", Toast.LENGTH_LONG).show();
+
     }
 
     public Location getCurrentLocation() {
