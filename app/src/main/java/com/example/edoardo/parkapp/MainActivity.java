@@ -402,7 +402,7 @@ public class MainActivity extends AppCompatActivity
             double latitude = Double.parseDouble(stringLatitude);
             double longitude = Double.parseDouble(stringLongitude);
             LatLng currentPosition = new LatLng(latitude, longitude);
-            currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Dio, sei tu?").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            currentPositionMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("Il tuo parcheggio").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
         }
     }
